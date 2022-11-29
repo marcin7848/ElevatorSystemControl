@@ -1,9 +1,8 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ManagementComponent } from './management/management.component';
 import { ElevatorComponent } from './elevator/elevator.component';
-
-
+import {MatButtonModule} from '@angular/material/button';
+import {CommonModule} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -11,7 +10,8 @@ import { ElevatorComponent } from './elevator/elevator.component';
     ElevatorComponent
   ],
   imports: [
-    CommonModule
+    CommonModule,
+    MatButtonModule
   ]
 })
 export class ElevatorManagementModule { }
