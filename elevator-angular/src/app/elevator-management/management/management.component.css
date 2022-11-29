@@ -3,6 +3,7 @@
 }
 
 .elevator-box{
+  margin-top: 5px;
   display: grid;
   overflow: hidden;
   grid-template-columns: repeat(4, 1fr);
