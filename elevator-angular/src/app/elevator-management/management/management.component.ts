@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Elevator} from "../../model/Elevator";
+import {ElevatorFloor} from "../../model/ElevatorFloor";
 
 @Component({
   selector: 'app-management',
@@ -7,14 +8,15 @@ import {Elevator} from "../../model/Elevator";
   styleUrls: ['./management.component.css']
 })
 export class ManagementComponent implements OnInit {
-  elevator: Elevator;
+  elevators: Elevator[];
+
   constructor(){
-    this.elevator = new Elevator(5, 2, []);
+    this.elevators = [
+      new Elevator(1, 2, [new ElevatorFloor(1, 5), new ElevatorFloor(1, 8)]),
+      new Elevator(5, 0, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)])
+    ];
   }
 
   ngOnInit() {
-    setTimeout(() => {
-      this.elevator.id = 98;
-    }, 5000);
   }
 }

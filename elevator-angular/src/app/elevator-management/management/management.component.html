@@ -2,4 +2,4 @@
   <button mat-raised-button color="accent" class="add-new-elevator-button">Add new elevator</button>
 </div>
 
-<app-elevator [elevator]="elevator"></app-elevator>
+<app-elevator *ngFor="let elevator of elevators" [elevator]="elevator"></app-elevator>

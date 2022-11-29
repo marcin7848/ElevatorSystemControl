@@ -11,10 +11,8 @@ export class ElevatorComponent implements OnInit {
 
 
   ngOnInit() {
-    console.log("on ngOnInit");
   }
 
   ngOnChanges(){
-    console.log("on changes");
   }
 }
