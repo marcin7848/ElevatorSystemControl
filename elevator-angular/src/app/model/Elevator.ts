@@ -3,12 +3,12 @@ import {ElevatorFloor} from "./ElevatorFloor";
 export class Elevator {
   id: number;
   currentFloor: number;
-  nextFloors: ElevatorFloor[] | undefined;
+  targetFloors: ElevatorFloor[] | undefined;
 
 
-  constructor(id: number, currentFloor: number, nextFloors?: ElevatorFloor[]) {
+  constructor(id: number, currentFloor: number, targetFloors?: ElevatorFloor[]) {
     this.id = id;
     this.currentFloor = currentFloor;
-    this.nextFloors = nextFloors;
+    this.targetFloors = targetFloors;
   }
 }

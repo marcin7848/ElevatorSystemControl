@@ -29,7 +29,7 @@ public class Elevator {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "elevator", cascade = CascadeType.ALL)
     @Fetch(value = FetchMode.SUBSELECT)
-    private List<ElevatorFloor> nextFloors;
+    private List<ElevatorFloor> targetFloors;
 
 
 
