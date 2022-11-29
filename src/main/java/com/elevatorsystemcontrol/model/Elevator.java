@@ -27,6 +27,9 @@ public class Elevator {
     @Column(name = "current_floor")
     private int currentFloor;
 
+    @Column(name = "current_status")
+    private int currentStatus;
+
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "elevator", cascade = CascadeType.ALL)
     @Fetch(value = FetchMode.SUBSELECT)
     private List<ElevatorFloor> targetFloors;
