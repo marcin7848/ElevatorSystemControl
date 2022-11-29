@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Range;
 
+import java.sql.Timestamp;
+
 @Entity
 @Table(name = "elevator_floors")
 @NoArgsConstructor
@@ -15,7 +17,10 @@ import org.jetbrains.annotations.Range;
 @AllArgsConstructor
 public class ElevatorFloor {
 
-//  Define MIN_FLOOR and MAX_FLOOR available for elevators
+    /*
+    @param MIN_FLOOR    Define minimum floor available for the elevator
+    @param MAX_FLOOR    Define maximum floor available for the elevator
+    */
     private static final int MIN_FLOOR = -2;
     private static final int MAX_FLOOR = 8;
 
@@ -29,6 +34,9 @@ public class ElevatorFloor {
     @Column(name = "floor")
     @Range(from=MIN_FLOOR,to=MAX_FLOOR)
     private int floor;
+
+    @Column(name = "floor_pick_time")
+    private Timestamp floorPickTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_elevator")
