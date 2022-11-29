@@ -1,3 +1,12 @@
 .add-new-elevator-button{
   margin-top: 5px;
 }
+
+.elevator-box{
+  display: grid;
+  overflow: hidden;
+  grid-template-columns: repeat(4, 1fr);
+  grid-column-gap: 10px;
+  grid-row-gap: 5px;
+  place-items: center;
+}
