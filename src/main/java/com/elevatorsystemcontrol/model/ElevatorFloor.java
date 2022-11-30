@@ -22,7 +22,7 @@ public class ElevatorFloor {
     @param MAX_FLOOR    Define maximum floor available for the elevator
     */
     private static final int MIN_FLOOR = -2;
-    private static final int MAX_FLOOR = 8;
+    private static final int MAX_FLOOR = 6;
 
     @Id
     @Column(name = "id_elevator_floor")

@@ -8,7 +8,9 @@ import {ElevatorFloor} from "../../model/ElevatorFloor";
   styleUrls: ['./management.component.css']
 })
 export class ManagementComponent implements OnInit {
+  readonly MAX_ELEVATORS: number = 16;
   elevators: Elevator[];
+  addNewElevatorDisabled: boolean = true;
 
   constructor(){
     this.elevators = [
@@ -24,10 +26,16 @@ export class ManagementComponent implements OnInit {
       new Elevator(5, 0, 0, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
       new Elevator(5, 0, 1, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
       new Elevator(5, 0, 2, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
-        new Elevator(5, 0, 3, [])
+        new Elevator(5, 0, 3, []),
+          new Elevator(5, 0, 3, []),
+      new Elevator(5, 0, 3, []),
+      new Elevator(5, 0, 3, [])
     ];
   }
 
   ngOnInit() {
+    this.addNewElevatorDisabled = this.elevators.length >= this.MAX_ELEVATORS;
   }
+
+
 }
