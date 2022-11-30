@@ -7,3 +7,24 @@
   text-align: center;
   font-size: 1.5em;
 }
+
+.floor-cards-box{
+  display: flex;
+  gap: 50px;
+  justify-content: center;
+}
+
+.floor-card{
+  background-color: #333333;
+  width: 120px;
+  text-align: center;
+}
+
+.floor-number-text{
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.current-status-box{
+  text-align: center;
+}

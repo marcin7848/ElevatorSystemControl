@@ -16,15 +16,15 @@ export class ManagementComponent implements OnInit {
       new Elevator(5, 0, 3, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
 
       new Elevator(5, 0, 2, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
-      new Elevator(5, 5, 4, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
+      new Elevator(5, 5, 3, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
       new Elevator(5, 0, 1, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
       new Elevator(5, 0, 3, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
-      new Elevator(5, 0, 5, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
+      new Elevator(5, 0, 2, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
       new Elevator(5, 0, 3, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
       new Elevator(5, 0, 0, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
       new Elevator(5, 0, 1, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
       new Elevator(5, 0, 2, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
-        new Elevator(5, 0, 3, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)])
+        new Elevator(5, 0, 3, [])
     ];
   }
 
