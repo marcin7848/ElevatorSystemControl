@@ -1,6 +1,75 @@
 <mat-card class="elevator-card">
   <mat-card-content>
-    ElevatorID: {{elevator.id}}
-    Elevator Current Floor: {{elevator.currentFloor}}
+    <div class="elevator-id-text">
+      <span>Elevator ID: #{{elevator.id}}</span>
+    </div>
+    <hr/>
+    <div class="floor-cards-box">
+      <mat-card class="floor-card">
+        <mat-card-content>
+          <span>Current floor</span>
+          <hr/>
+          <span class="floor-number-text">{{elevator.currentFloor}}</span>
+        </mat-card-content>
+      </mat-card>
+      <mat-card class="floor-card">
+        <mat-card-content>
+          <span>Next floor</span>
+          <hr/>
+          <span class="floor-number-text">{{elevator.targetFloors?.at(0)?.floor}}</span>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <hr/>
+    <div class="elevator-box-text">
+      <span>Current status:
+        <ng-container [ngSwitch]="elevator.currentStatus">
+          <ng-container *ngSwitchCase="0">Waiting on the floor {{elevator.currentFloor}}</ng-container>
+          <ng-container *ngSwitchCase="1">Going to the floor {{elevator.targetFloors?.at(0)?.floor}}</ng-container>
+          <ng-container *ngSwitchCase="2">Opening doors</ng-container>
+          <ng-container *ngSwitchCase="3">Closing doors</ng-container>
+          <ng-container *ngSwitchDefault></ng-container>
+        </ng-container>
+      </span>
+    </div>
+    <hr/>
+    <div class="elevator-box-text">
+      <span>Target floors in order:
+        <ng-container *ngFor="let targetFloor of elevator.targetFloors; last as isLast">
+          {{targetFloor.floor}}<ng-container *ngIf="!isLast">, </ng-container>
+        </ng-container>
+      </span>
+    </div>
+    <hr/>
+    <div>
+      <mat-card class="management-card">
+        <mat-card-content>
+          <div class="management-card-content">
+            <div class="management-card-header-element right-border">Select the floor on which to call the elevator</div>
+            <div class="management-card-header-element left-border">Select the floor to which the elevator should go</div>
+          </div>
+
+          <div class="management-card-content">
+            <div class="management-card-element right-border">
+              <div class="floor-list">
+                <div *ngFor="let floor of range;" class="floor-element">
+                  <span>{{floor}}</span>
+                </div>
+              </div>
+            </div>
+            <div class="management-card-element left-border">
+              <div class="floor-list">
+                <div *ngFor="let floor of range;" class="floor-element">
+                  <span>{{floor}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="delete-box">
+      <button mat-raised-button color="accent" matTooltip="Delete this elevator" matTooltipPosition="above">X</button>
+    </div>
   </mat-card-content>
 </mat-card>

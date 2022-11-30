@@ -1,3 +1,7 @@
+.new-elevator-box{
+  display: inline-block;
+}
+
 .add-new-elevator-button{
   margin-top: 5px;
 }
@@ -7,7 +11,7 @@
   display: grid;
   overflow: hidden;
   grid-template-columns: repeat(4, 1fr);
-  grid-column-gap: 10px;
-  grid-row-gap: 5px;
+  grid-column-gap: 15px;
+  grid-row-gap: 25px;
   place-items: center;
 }
