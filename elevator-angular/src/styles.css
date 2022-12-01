@@ -9,3 +9,11 @@ body {
 mat-icon{
   color: white;
 }
+
+.snackbar{
+  text-align: center;
+}
+
+.snackbar-error{
+  text-align: center;
+}
