@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Elevator} from "../../model/Elevator";
 import {ElevatorFloor} from "../../model/ElevatorFloor";
+import {ElevatorService} from "../elevator.service";
 
 @Component({
   selector: 'app-management',
@@ -12,7 +13,8 @@ export class ManagementComponent implements OnInit {
   elevators: Elevator[];
   addNewElevatorDisabled: boolean = true;
 
-  constructor(){
+  constructor(private elevatorService: ElevatorService){
+
     this.elevators = [
       new Elevator(1, 2, 0, [new ElevatorFloor(1, 5), new ElevatorFloor(1, 8)]),
       new Elevator(5, 0, 3, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
@@ -36,6 +38,22 @@ export class ManagementComponent implements OnInit {
   ngOnInit() {
     this.addNewElevatorDisabled = this.elevators.length >= this.MAX_ELEVATORS;
   }
+
+  addNewElevator(){
+    this.addNewElevatorDisabled = true;
+    this.elevatorService.addNewElevator()
+      .subscribe({
+        next: () => {
+          console.log("added");
+          this.addNewElevatorDisabled = false;
+        },
+        error: msg => {
+          console.log(msg);
+          this.addNewElevatorDisabled = false;
+        }
+      });
+  }
+
 
 
 }

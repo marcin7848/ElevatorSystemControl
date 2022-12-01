@@ -1,7 +1,7 @@
 <div class="new-elevator-box" matTooltip="No more elevators can be added! Maximum reached."
      [matTooltipDisabled]="!addNewElevatorDisabled">
   <button mat-raised-button color="accent" class="add-new-elevator-button"
-          [disabled]="addNewElevatorDisabled">Add new elevator</button>
+          [disabled]="addNewElevatorDisabled" (click)="addNewElevator()">Add new elevator</button>
 </div>
 
 <div class="elevator-box">
