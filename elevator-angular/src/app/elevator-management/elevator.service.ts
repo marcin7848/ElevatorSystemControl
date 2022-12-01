@@ -11,9 +11,12 @@ export class ElevatorService {
   mainHttp: string = "/elevator/";
   constructor(private http: HttpClient) { }
 
+  getAllElevators(): Observable<Elevator[]> {
+    return this.http.get<Elevator[]>(this.mainHttp + 'getAll');
+  }
+
   addNewElevator(): Observable<Elevator> {
     return this.http.post<Elevator>(this.mainHttp + 'add', {});
   }
-
 
 }

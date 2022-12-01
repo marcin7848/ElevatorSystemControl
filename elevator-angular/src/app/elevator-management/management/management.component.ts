@@ -11,40 +11,32 @@ import {AppService} from "../../app.service";
 })
 export class ManagementComponent implements OnInit {
   readonly MAX_ELEVATORS: number = 16;
-  elevators: Elevator[];
+  elevators: Elevator[] = [];
   addNewElevatorDisabled: boolean = true;
 
   constructor(private elevatorService: ElevatorService, private appService: AppService){
-
-    this.elevators = [
-      new Elevator(1, 2, 0, [new ElevatorFloor(1, 5), new ElevatorFloor(1, 8)]),
-      new Elevator(5, 0, 3, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
-
-      new Elevator(5, 0, 2, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
-      new Elevator(5, 5, 3, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
-      new Elevator(5, 0, 1, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
-      new Elevator(5, 0, 3, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
-      new Elevator(5, 0, 2, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
-      new Elevator(5, 0, 3, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
-      new Elevator(5, 0, 0, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
-      new Elevator(5, 0, 1, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
-      new Elevator(5, 0, 2, [new ElevatorFloor(5, 1), new ElevatorFloor(5, 2)]),
-        new Elevator(5, 0, 3, []),
-          new Elevator(5, 0, 3, []),
-      new Elevator(5, 0, 3, []),
-      new Elevator(5, 0, 3, [])
-    ];
   }
 
   ngOnInit() {
-    this.addNewElevatorDisabled = this.elevators.length >= this.MAX_ELEVATORS;
+    this.elevatorService.getAllElevators()
+      .subscribe({
+        next: (elevators) => {
+          this.elevators = elevators;
+          this.addNewElevatorDisabled = this.elevators.length >= this.MAX_ELEVATORS;
+        },
+        error: msg => {
+          this.appService.openSnackBarError(msg);
+        }
+      });
+
   }
 
   addNewElevator(){
     this.addNewElevatorDisabled = true;
     this.elevatorService.addNewElevator()
       .subscribe({
-        next: () => {
+        next: (elevator) => {
+          this.elevators.push(elevator);
           this.appService.openSnackBar("A new elevator has been added!");
           this.addNewElevatorDisabled = false;
         },

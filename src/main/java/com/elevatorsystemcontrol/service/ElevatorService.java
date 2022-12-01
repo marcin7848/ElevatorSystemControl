@@ -6,6 +6,8 @@ import com.elevatorsystemcontrol.repository.ElevatorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ElevatorService implements IElevatorService {
 
@@ -18,11 +20,24 @@ public class ElevatorService implements IElevatorService {
         this.elevatorRepository = elevatorRepository;
     }
 
+    /*
+     * Gets all elevators from the database, no params available
+     * @return List<Elevators> with all elevators
+     * */
+    public List<Elevator> getAll(){
+        return (List<Elevator>) this.elevatorRepository.findAll();
+    }
+
+    /*
+    * Adds a new elevator to the system, no params available
+    * @exception throws ResponseEntity exception if the database already contains a maximum number of elevators
+    * defined in MAX_ELEVATORS
+    * @return Elevator object created in the database
+    * */
     public Elevator addNewElevator(){
         if(this.elevatorRepository.count() >= this.MAX_ELEVATORS){
             throw new MessageException("You cannot add more elevators! Maximum reached.");
         }
-
         return this.elevatorRepository.save(new Elevator());
     }
 

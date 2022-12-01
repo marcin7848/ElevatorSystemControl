@@ -18,12 +18,10 @@ public class ElevatorController {
         this.elevatorService = elevatorService;
     }
 
-    @GetMapping("/test")
+    @GetMapping("/getAll")
     public ResponseEntity<?> test(){
-
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(this.elevatorService.getAll(), HttpStatus.OK);
     }
-
 
     @PostMapping("/add")
     public ResponseEntity<?> addNewElevator(){
