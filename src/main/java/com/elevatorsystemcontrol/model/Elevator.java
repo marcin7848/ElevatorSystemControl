@@ -19,16 +19,15 @@ public class Elevator {
 
     @Id
     @Column(name = "id_elevator")
-    @SequenceGenerator(name = "elevator_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "elevator_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "elevator_seq")
     @NotNull
     private Long id;
 
     @Column(name = "current_floor")
-    private int currentFloor;
+    private int currentFloor = 0;
 
     @Column(name = "current_status")
-    private int currentStatus;
+    private int currentStatus = 0;
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "elevator", cascade = CascadeType.ALL)
     @Fetch(value = FetchMode.SUBSELECT)

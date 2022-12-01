@@ -26,8 +26,7 @@ public class ElevatorFloor {
 
     @Id
     @Column(name = "id_elevator_floor")
-    @SequenceGenerator(name = "elevator_floor_seq", allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "elevator_floor_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "elevator_floor_seq")
     @NotNull
     private Long id;
 
