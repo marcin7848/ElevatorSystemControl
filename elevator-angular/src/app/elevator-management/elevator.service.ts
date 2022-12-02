@@ -19,4 +19,8 @@ export class ElevatorService {
     return this.http.post<Elevator>(this.mainHttp + 'add', {});
   }
 
+  deleteElevator(elevator: Elevator) {
+    return this.http.delete(this.mainHttp + elevator.id + '/delete');
+  }
+
 }

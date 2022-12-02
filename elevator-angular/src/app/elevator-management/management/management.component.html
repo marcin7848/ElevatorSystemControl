@@ -5,5 +5,5 @@
 </div>
 
 <div class="elevator-box">
-  <app-elevator *ngFor="let elevator of elevators" [elevator]="elevator"></app-elevator>
+  <app-elevator *ngFor="let elevator of elevators" [elevator]="elevator" (deleteElevatorEvent)="deleteElevator($event)"></app-elevator>
 </div>

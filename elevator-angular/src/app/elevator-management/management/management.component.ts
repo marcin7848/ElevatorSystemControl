@@ -22,13 +22,16 @@ export class ManagementComponent implements OnInit {
       .subscribe({
         next: (elevators) => {
           this.elevators = elevators;
-          this.addNewElevatorDisabled = this.elevators.length >= this.MAX_ELEVATORS;
+          this.disableElevatorButton();
         },
         error: msg => {
           this.appService.openSnackBarError(msg);
         }
       });
+  }
 
+  disableElevatorButton(){
+    this.addNewElevatorDisabled = this.elevators.length >= this.MAX_ELEVATORS;
   }
 
   addNewElevator(){
@@ -43,6 +46,22 @@ export class ManagementComponent implements OnInit {
         error: msg => {
           this.appService.openSnackBarError(msg);
           this.addNewElevatorDisabled = false;
+        }
+      });
+  }
+
+  deleteElevator($elevatorEvent: Elevator){
+    this.elevatorService.deleteElevator($elevatorEvent)
+      .subscribe({
+        next: () => {
+          this.appService.openSnackBar("The elevator has been deleted!");
+          this.elevators.forEach((e, index) => {
+            if(e.id == $elevatorEvent.id) this.elevators.splice(index, 1);
+          });
+          this.disableElevatorButton();
+        },
+        error: msg => {
+          this.appService.openSnackBarError(msg);
         }
       });
   }

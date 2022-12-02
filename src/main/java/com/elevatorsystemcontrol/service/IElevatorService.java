@@ -8,4 +8,6 @@ public interface IElevatorService {
     List<Elevator> getAll();
     Elevator addNewElevator();
 
+    boolean deleteElevator(Long id);
+
 }

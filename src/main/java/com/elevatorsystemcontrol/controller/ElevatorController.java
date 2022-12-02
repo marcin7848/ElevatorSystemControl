@@ -28,4 +28,10 @@ public class ElevatorController {
         return new ResponseEntity<>(this.elevatorService.addNewElevator(), HttpStatus.OK);
     }
 
+    @DeleteMapping ("/{id}/delete")
+    public ResponseEntity<?> deleteElevator(@PathVariable("id") Long id){
+        this.elevatorService.deleteElevator(id);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
 }

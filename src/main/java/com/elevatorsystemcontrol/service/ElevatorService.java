@@ -29,6 +29,16 @@ public class ElevatorService implements IElevatorService {
     }
 
     /*
+     * Get elevator object of the given ID
+     * @param Long id - elevator's ID
+     * @return Elevator object
+     * */
+    public Elevator getElevator(Long id){
+        return elevatorRepository.findById(id)
+                .orElseThrow(() -> new MessageException("Elevator does not exist!"));
+    }
+
+    /*
     * Adds a new elevator to the system, no params available
     * @exception throws ResponseEntity exception if the database already contains a maximum number of elevators
     * defined in MAX_ELEVATORS
@@ -39,6 +49,18 @@ public class ElevatorService implements IElevatorService {
             throw new MessageException("You cannot add more elevators! Maximum reached.");
         }
         return this.elevatorRepository.save(new Elevator());
+    }
+
+    /*
+     * Adds a new elevator to the system, no params available
+     * @exception throws ResponseEntity exception if the database already contains a maximum number of elevators
+     * defined in MAX_ELEVATORS
+     * @return Elevator object created in the database
+     * */
+    public boolean deleteElevator(Long id){
+        Elevator elevator = this.getElevator(id);
+        this.elevatorRepository.delete(elevator);
+        return true;
     }
 
 }
