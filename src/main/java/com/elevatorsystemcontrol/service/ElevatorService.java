@@ -31,6 +31,7 @@ public class ElevatorService implements IElevatorService {
     /*
      * Get elevator object of the given ID
      * @param Long id - elevator's ID
+     * @exception - throws ResponseEntity exception if the elevator with the specified ID doesn't exist
      * @return Elevator object
      * */
     public Elevator getElevator(Long id){
@@ -52,15 +53,20 @@ public class ElevatorService implements IElevatorService {
     }
 
     /*
-     * Adds a new elevator to the system, no params available
-     * @exception throws ResponseEntity exception if the database already contains a maximum number of elevators
-     * defined in MAX_ELEVATORS
-     * @return Elevator object created in the database
+     * Deletes the elevator of the given ID
+     * @param Long id - elevator's ID to delete
+     * @exception - throws exception in getElevator method if the elevator to delete doesn't exist
+     * @return boolean - true if the elevator has been deleted, false if it has not
      * */
     public boolean deleteElevator(Long id){
         Elevator elevator = this.getElevator(id);
         this.elevatorRepository.delete(elevator);
-        return true;
+        try{
+            this.getElevator(id);
+            return false;
+        }catch (Exception e){
+            return true;
+        }
     }
 
 }

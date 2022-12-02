@@ -19,7 +19,7 @@ public class ElevatorController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<?> test(){
+    public ResponseEntity<?> getAll(){
         return new ResponseEntity<>(this.elevatorService.getAll(), HttpStatus.OK);
     }
 
@@ -30,8 +30,7 @@ public class ElevatorController {
 
     @DeleteMapping ("/{id}/delete")
     public ResponseEntity<?> deleteElevator(@PathVariable("id") Long id){
-        this.elevatorService.deleteElevator(id);
-        return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(this.elevatorService.deleteElevator(id), HttpStatus.OK);
     }
 
 }
