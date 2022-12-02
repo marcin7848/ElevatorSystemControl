@@ -45,8 +45,8 @@
       <mat-card class="management-card">
         <mat-card-content>
           <div class="management-card-content">
-            <div class="management-card-header-element right-border">Select the floor on which to call the elevator</div>
-            <div class="management-card-header-element left-border">Select the floor to which the elevator should go</div>
+            <div class="management-card-header-element right-border">Select the floor inside the elevator where you want to go</div>
+            <div class="management-card-header-element left-border">Select the arrow up/down on the specified floor to tell of you want to go up/down from there</div>
           </div>
 
           <div class="management-card-content">
@@ -58,9 +58,15 @@
               </div>
             </div>
             <div class="management-card-element left-border">
-              <div class="floor-list">
-                <div *ngFor="let floor of range;" class="floor-element">
-                  <span>{{floor}}</span>
+              <div class="floor-list-direction">
+                <div *ngFor="let floor of range;" class="floor-element-direction">
+                  <span class="floor-element-direction-text">{{floor}}</span>
+                  <ng-container *ngIf="!(floor == MAX_FLOOR)">
+                    <mat-icon fontIcon="arrow_circle_up" class="arrows"></mat-icon>
+                  </ng-container>
+                  <ng-container *ngIf="!(floor == MIN_FLOOR)">
+                    <mat-icon fontIcon="arrow_circle_down" class="arrows"></mat-icon>
+                  </ng-container>
                 </div>
               </div>
             </div>

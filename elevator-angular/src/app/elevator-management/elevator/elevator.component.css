@@ -85,8 +85,35 @@
   background-color: #ff9966;
 }
 
+.floor-list-direction{
+  display: grid;
+  overflow: hidden;
+  grid-template-columns: repeat(2, 1fr);
+  grid-column-gap: 2px;
+  grid-row-gap: 2px;
+  place-items: center;
+}
+
+.floor-element-direction{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-column-gap: 2px;
+  place-items: center;
+}
+
+.arrows{
+  cursor: pointer;
+  border-radius: 50%;
+}
+
+.arrows:active {
+  background-color: #ff9966;
+}
+
 .delete-box{
   margin-top: 10px;
   display: flex;
   justify-content: right;
 }
+
+

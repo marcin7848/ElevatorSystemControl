@@ -5,6 +5,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {CommonModule} from "@angular/common";
 import {MatCardModule} from "@angular/material/card";
 import {MatTooltipModule} from "@angular/material/tooltip";
+import {MatIconModule} from "@angular/material/icon";
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import {MatTooltipModule} from "@angular/material/tooltip";
         CommonModule,
         MatButtonModule,
         MatCardModule,
-        MatTooltipModule
+        MatTooltipModule,
+        MatIconModule
     ]
 })
 export class ElevatorManagementModule { }
