@@ -12,6 +12,11 @@
           <span class="floor-number-text">{{elevator.currentFloor}}</span>
         </mat-card-content>
       </mat-card>
+      <div class="progress-spinner-box">
+        <ng-container *ngIf="(elevator.currentStatus == 1)">
+          <mat-progress-spinner color="accent" mode="indeterminate" [diameter]="35"></mat-progress-spinner>
+        </ng-container>
+      </div>
       <mat-card class="floor-card">
         <mat-card-content>
           <span>Next floor</span>

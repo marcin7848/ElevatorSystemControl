@@ -9,7 +9,7 @@
 
 .floor-cards-box{
   display: flex;
-  gap: 50px;
+  gap: 15px;
   justify-content: center;
 }
 
@@ -116,4 +116,10 @@
   justify-content: right;
 }
 
+.progress-spinner-box{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 35px;
+}
 

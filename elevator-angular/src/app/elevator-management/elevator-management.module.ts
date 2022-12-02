@@ -6,6 +6,7 @@ import {CommonModule} from "@angular/common";
 import {MatCardModule} from "@angular/material/card";
 import {MatTooltipModule} from "@angular/material/tooltip";
 import {MatIconModule} from "@angular/material/icon";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import {MatIconModule} from "@angular/material/icon";
         MatButtonModule,
         MatCardModule,
         MatTooltipModule,
-        MatIconModule
+        MatIconModule,
+        MatProgressSpinnerModule
     ]
 })
 export class ElevatorManagementModule { }
