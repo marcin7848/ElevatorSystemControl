@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Elevator} from "../../model/Elevator";
 import {ElevatorService} from "../elevator.service";
 import {AppService} from "../../app.service";
-import {timer} from "rxjs";
+import {interval, timer} from "rxjs";
 
 @Component({
   selector: 'app-management',
@@ -19,6 +19,16 @@ export class ManagementComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.elevatorService.getAllElevators()
+      .subscribe({
+        next: (elevators) => {
+          this.elevators = elevators;
+          this.disableElevatorButton();
+        },
+        error: msg => {
+          this.appService.openSnackBarError(msg);
+        }
+      });
   }
 
   disableElevatorButton(){
@@ -59,18 +69,31 @@ export class ManagementComponent implements OnInit {
   }
 
   reloadElevatorsDataInInterval(){
-    timer(0, 1000).subscribe((x =>{
+    interval(1000).subscribe((x =>{
       this.elevatorService.getAllElevators()
         .subscribe({
           next: (elevators) => {
-            this.elevators = elevators;
-            this.disableElevatorButton();
+            this.updateElevators(elevators);
           },
           error: msg => {
             this.appService.openSnackBarError(msg);
           }
         });
     }));
+  }
+
+  updateElevators(elevators: Elevator[]){
+    this.elevators.forEach(elevator => {
+      const index = elevators.findIndex(e => e.id == elevator.id);
+      if(index == -1){
+        this.ngOnInit();
+        return;
+      }
+
+      elevator.currentFloor = elevators[index].currentFloor;
+      elevator.currentStatus = elevators[index].currentStatus;
+      elevator.targetFloors = elevators[index].targetFloors;
+    });
   }
 
 
