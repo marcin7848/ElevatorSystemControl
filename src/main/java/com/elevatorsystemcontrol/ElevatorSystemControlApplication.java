@@ -13,12 +13,11 @@ import java.util.concurrent.Executor;
 @EnableAsync(proxyTargetClass = true)
 @EnableScheduling
 public class ElevatorSystemControlApplication {
-
     @Bean
     public Executor asyncExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(2);
-        executor.setMaxPoolSize(2);
+        executor.setCorePoolSize(10);
+        executor.setMaxPoolSize(10);
         executor.setQueueCapacity(500);
         executor.setThreadNamePrefix("elevatorTask-");
         executor.initialize();

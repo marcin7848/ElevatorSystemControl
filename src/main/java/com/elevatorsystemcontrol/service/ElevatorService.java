@@ -3,7 +3,11 @@ package com.elevatorsystemcontrol.service;
 import com.elevatorsystemcontrol.exceptions.MessageException;
 import com.elevatorsystemcontrol.model.Elevator;
 import com.elevatorsystemcontrol.repository.ElevatorRepository;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -73,21 +77,20 @@ public class ElevatorService implements IElevatorService {
     }
 
 
-    @Scheduled(initialDelay=1000, fixedRate=1000)
+    //@EventListener(ApplicationReadyEvent.class)
+    @Scheduled(initialDelay = 1000, fixedDelay=1000)
     public void manageElevatorsTask() {
-        this.getAll().forEach(x ->{
-            System.out.println(x.getVersion());
-            x.setCurrentFloor(x.getCurrentFloor()+1);
-            this.elevatorRepository.save(x);
-        });
-        //this.getAll().forEach(this::updateElevator);
+        this.getAll().forEach(this::createThreadForElevator);
     }
 
     @Async
-    public void updateElevator(Elevator elevator){
-        //System.out.println("test" + elevator.getId());
+    public void createThreadForElevator(Elevator elevator){
+        //TODO: Create one thread for each elevator
+        //Updating each elevator inside every thread separately
+
         try {
-            Thread.sleep((int)(Math.random() * 5000 + 1));
+            Thread.sleep((int)(Math.random()*5000+1));
+            System.out.println("test " + elevator.getId());
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

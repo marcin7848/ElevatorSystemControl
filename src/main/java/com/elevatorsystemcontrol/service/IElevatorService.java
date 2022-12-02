@@ -11,5 +11,6 @@ public interface IElevatorService {
     boolean deleteElevator(Long id);
 
     void manageElevatorsTask();
-    void updateElevator(Elevator elevator);
+    void createThreadForElevator(Elevator elevator);
+
 }
