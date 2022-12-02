@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {Elevator} from "../../model/Elevator";
-import {ElevatorFloor} from "../../model/ElevatorFloor";
 import {ElevatorService} from "../elevator.service";
 import {AppService} from "../../app.service";
+import {timer} from "rxjs";
 
 @Component({
   selector: 'app-management',
@@ -15,19 +15,10 @@ export class ManagementComponent implements OnInit {
   addNewElevatorDisabled: boolean = true;
 
   constructor(private elevatorService: ElevatorService, private appService: AppService){
+    this.reloadElevatorsDataInInterval();
   }
 
   ngOnInit() {
-    this.elevatorService.getAllElevators()
-      .subscribe({
-        next: (elevators) => {
-          this.elevators = elevators;
-          this.disableElevatorButton();
-        },
-        error: msg => {
-          this.appService.openSnackBarError(msg);
-        }
-      });
   }
 
   disableElevatorButton(){
@@ -67,6 +58,20 @@ export class ManagementComponent implements OnInit {
       });
   }
 
+  reloadElevatorsDataInInterval(){
+    timer(0, 1000).subscribe((x =>{
+      this.elevatorService.getAllElevators()
+        .subscribe({
+          next: (elevators) => {
+            this.elevators = elevators;
+            this.disableElevatorButton();
+          },
+          error: msg => {
+            this.appService.openSnackBarError(msg);
+          }
+        });
+    }));
+  }
 
 
 }
