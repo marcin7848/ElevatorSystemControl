@@ -55,4 +55,7 @@ public class ElevatorFloor {
     @JsonBackReference
     private Elevator elevator;
 
+    @Version
+    private Integer version;
+
 }

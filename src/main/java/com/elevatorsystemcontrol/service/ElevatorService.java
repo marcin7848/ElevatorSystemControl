@@ -4,9 +4,12 @@ import com.elevatorsystemcontrol.exceptions.MessageException;
 import com.elevatorsystemcontrol.model.Elevator;
 import com.elevatorsystemcontrol.repository.ElevatorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class ElevatorService implements IElevatorService {
@@ -69,6 +72,26 @@ public class ElevatorService implements IElevatorService {
         }
     }
 
+
+    @Scheduled(initialDelay=1000, fixedRate=1000)
+    public void manageElevatorsTask() {
+        this.getAll().forEach(x ->{
+            System.out.println(x.getVersion());
+            x.setCurrentFloor(x.getCurrentFloor()+1);
+            this.elevatorRepository.save(x);
+        });
+        //this.getAll().forEach(this::updateElevator);
+    }
+
+    @Async
+    public void updateElevator(Elevator elevator){
+        //System.out.println("test" + elevator.getId());
+        try {
+            Thread.sleep((int)(Math.random() * 5000 + 1));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 
 

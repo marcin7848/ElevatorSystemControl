@@ -33,6 +33,7 @@ public class Elevator {
     @Fetch(value = FetchMode.SUBSELECT)
     private List<ElevatorFloor> targetFloors;
 
-
+    @Version
+    private Integer version;
 
 }
