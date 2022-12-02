@@ -56,7 +56,7 @@ public class ControllerAdvisor extends ResponseEntityExceptionHandler {
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                .map(x -> String.format("%s: %s", x.getField(), x.getDefaultMessage()))
                 .collect(Collectors.toList());
 
         body.put("errors", errors);
