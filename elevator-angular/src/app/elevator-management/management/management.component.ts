@@ -39,6 +39,7 @@ export class ManagementComponent implements OnInit {
     this.elevatorService.addNewElevator()
       .subscribe({
         next: (elevator) => {
+          elevator.targetFloors = [];
           this.elevators.push(elevator);
           this.appService.openSnackBar("A new elevator has been added!");
           this.addNewElevatorDisabled = false;

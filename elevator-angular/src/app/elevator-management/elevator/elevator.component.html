@@ -52,7 +52,8 @@
           <div class="management-card-content">
             <div class="management-card-element right-border">
               <div class="floor-list">
-                <div *ngFor="let floor of range;" class="floor-element">
+                <div *ngFor="let floor of range;" class="floor-element"
+                     (click)="addNewElevatorFloor(floor, 0)">
                   <span>{{floor}}</span>
                 </div>
               </div>
@@ -62,10 +63,12 @@
                 <div *ngFor="let floor of range;" class="floor-element-direction">
                   <span class="floor-element-direction-text">{{floor}}</span>
                   <ng-container *ngIf="!(floor == MAX_FLOOR)">
-                    <mat-icon fontIcon="arrow_circle_up" class="arrows"></mat-icon>
+                    <mat-icon fontIcon="arrow_circle_up" class="arrows"
+                              (click)="addNewElevatorFloor(floor, 1)"></mat-icon>
                   </ng-container>
                   <ng-container *ngIf="!(floor == MIN_FLOOR)">
-                    <mat-icon fontIcon="arrow_circle_down" class="arrows"></mat-icon>
+                    <mat-icon fontIcon="arrow_circle_down" class="arrows"
+                              (click)="addNewElevatorFloor(floor, 2)"></mat-icon>
                   </ng-container>
                 </div>
               </div>

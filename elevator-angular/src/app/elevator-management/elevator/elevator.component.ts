@@ -1,5 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Elevator} from "../../model/Elevator";
+import {ElevatorService} from "../elevator.service";
+import {AppService} from "../../app.service";
+import {ElevatorFloor} from "../../model/ElevatorFloor";
 
 @Component({
   selector: 'app-elevator',
@@ -17,6 +20,8 @@ export class ElevatorComponent implements OnInit {
 
   @Output() deleteElevatorEvent = new EventEmitter<Elevator>();
 
+  constructor(private elevatorService: ElevatorService, private appService: AppService){
+  }
   ngOnInit() {
 
   }
@@ -26,6 +31,18 @@ export class ElevatorComponent implements OnInit {
 
   deleteElevator(){
     this.deleteElevatorEvent.emit(this.elevator);
+  }
+
+  addNewElevatorFloor(floor: number, direction: number){
+    this.elevatorService.addNewElevatorFloor(new ElevatorFloor(0, floor, direction), this.elevator.id!)
+      .subscribe({
+        next: (elevatorFloor) => {
+          this.elevator.targetFloors!.push(elevatorFloor);
+        },
+        error: msg => {
+          this.appService.openSnackBarError(msg);
+        }
+      });
   }
 
 }
