@@ -60,8 +60,8 @@ public class ElevatorService implements IElevatorService {
      * */
     public boolean deleteElevator(Long id){
         Elevator elevator = this.getElevator(id);
-        this.elevatorRepository.delete(elevator);
         try{
+            this.elevatorRepository.delete(elevator);
             this.getElevator(id);
             return false;
         }catch (Exception e){
