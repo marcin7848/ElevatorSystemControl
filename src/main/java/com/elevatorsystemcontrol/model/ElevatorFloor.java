@@ -2,11 +2,12 @@ package com.elevatorsystemcontrol.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Range;
 
 import java.sql.Timestamp;
 
@@ -31,7 +32,8 @@ public class ElevatorFloor {
     private Long id;
 
     @Column(name = "floor")
-    @Range(from=MIN_FLOOR,to=MAX_FLOOR)
+    @Min(MIN_FLOOR)
+    @Max(MAX_FLOOR)
     private int floor;
 
 
@@ -41,7 +43,8 @@ public class ElevatorFloor {
     * 2 - you want to go down
     * */
     @Column(name = "direction")
-    @Range(from=0,to=2)
+    @Min(0)
+    @Max(2)
     private int direction = 0;
 
     @Column(name = "floor_pick_time")

@@ -22,7 +22,7 @@ public class ElevatorService implements IElevatorService {
 
     /*
      * Gets all elevators from the database, no params available
-     * @return  List<Elevators> with all elevators
+     * @return  A List<Elevators> with all elevators
      * */
     public List<Elevator> getAll(){
         return (List<Elevator>) this.elevatorRepository.findAll();
@@ -30,7 +30,7 @@ public class ElevatorService implements IElevatorService {
 
     /*
      * Get elevator object of the given ID
-     * @param Long id   elevator's ID
+     * @param id   elevator's Long ID
      * @exception       throws ResponseEntity exception if the elevator with the specified ID doesn't exist
      * @return          Elevator object
      * */
@@ -54,7 +54,7 @@ public class ElevatorService implements IElevatorService {
 
     /*
      * Deletes the elevator of the given ID
-     * @param Long id   elevator's ID to delete
+     * @param id   elevator's Long ID to delete
      * @exception       throws exception in getElevator method if the elevator to delete doesn't exist
      * @return boolean  true if the elevator has been deleted, false if it has not
      * */
@@ -68,6 +68,7 @@ public class ElevatorService implements IElevatorService {
             return true;
         }
     }
+
 
 
 
