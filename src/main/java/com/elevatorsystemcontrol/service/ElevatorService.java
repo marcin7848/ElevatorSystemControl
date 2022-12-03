@@ -76,13 +76,6 @@ public class ElevatorService implements IElevatorService {
         }
     }
 
-
-    //@EventListener(ApplicationReadyEvent.class)
-    @Scheduled(initialDelay = 1000, fixedDelay=1000)
-    public void manageElevatorsTask() {
-        this.getAll().forEach(this::createThreadForElevator);
-    }
-
     @Async
     public void createThreadForElevator(Elevator elevator){
         //TODO: Create one thread for each elevator
