@@ -84,6 +84,8 @@ public class ElevatorService implements IElevatorService {
         try {
             Thread.sleep((int)(Math.random()*5000+1));
             System.out.println("test " + elevator.getId());
+            this.createThreadForElevator(elevator);
+
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }

@@ -1,6 +1,7 @@
 package com.elevatorsystemcontrol.controller;
 
 import com.elevatorsystemcontrol.exceptions.MessageException;
+import com.elevatorsystemcontrol.model.Elevator;
 import com.elevatorsystemcontrol.model.ElevatorFloor;
 import com.elevatorsystemcontrol.service.ElevatorFloorService;
 import com.elevatorsystemcontrol.service.ElevatorService;
@@ -34,7 +35,9 @@ public class ElevatorController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addNewElevator(){
-        return new ResponseEntity<>(this.elevatorService.addNewElevator(), HttpStatus.OK);
+        Elevator elevator = this.elevatorService.addNewElevator();
+        this.elevatorService.createThreadForElevator(elevator);
+        return new ResponseEntity<>(elevator, HttpStatus.OK);
     }
 
     @DeleteMapping ("/{id}/delete")
