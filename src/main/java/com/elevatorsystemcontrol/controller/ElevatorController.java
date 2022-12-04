@@ -35,9 +35,7 @@ public class ElevatorController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addNewElevator(){
-        Elevator elevator = this.elevatorService.addNewElevator();
-        this.elevatorService.createThreadForElevator(elevator);
-        return new ResponseEntity<>(elevator, HttpStatus.OK);
+        return new ResponseEntity<>(this.elevatorService.addNewElevator(), HttpStatus.OK);
     }
 
     @DeleteMapping ("/{id}/delete")

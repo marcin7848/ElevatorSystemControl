@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Random;
 
 @Service
-public class ElevatorService implements IElevatorService {
+public class ElevatorService implements IElevatorService  {
 
     //@param MAX_ELEVATORS  define the maximum number of elevators controlled by the system
     private final int MAX_ELEVATORS = 16;
@@ -48,6 +48,7 @@ public class ElevatorService implements IElevatorService {
 
     /*
     * Adds a new elevator to the system, no params available
+    * After adding the elevator to the database, it starts a thread for managing this elevator
     * @exception    throws ResponseEntity exception if the database already contains a maximum number of elevators
     *               defined in MAX_ELEVATORS
     * @return       Elevator object created in the database
@@ -56,7 +57,14 @@ public class ElevatorService implements IElevatorService {
         if(this.elevatorRepository.count() >= this.MAX_ELEVATORS){
             throw new MessageException("You cannot add more elevators! Maximum reached.");
         }
-        return this.elevatorRepository.save(new Elevator());
+        Elevator elevator = this.elevatorRepository.save(new Elevator());
+
+        Runnable myrunnable = () ->  {
+            new ElevatorThreadStart(this).createThreadForElevator(elevator);
+        };
+        new Thread(myrunnable).start();
+
+        return elevator;
     }
 
     /*
@@ -77,14 +85,14 @@ public class ElevatorService implements IElevatorService {
     }
 
     @Async
-    public void createThreadForElevator(Elevator elevator){
+    public void manageThreadForElevator(Elevator elevator){
         //TODO: Create one thread for each elevator
         //Updating each elevator inside every thread separately
 
         try {
             Thread.sleep((int)(Math.random()*5000+1));
             System.out.println("test " + elevator.getId());
-            this.createThreadForElevator(elevator);
+            this.manageThreadForElevator(elevator);
 
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
