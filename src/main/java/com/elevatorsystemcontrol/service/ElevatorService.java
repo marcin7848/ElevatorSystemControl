@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 public class ElevatorService implements IElevatorService  {
@@ -58,11 +60,7 @@ public class ElevatorService implements IElevatorService  {
             throw new MessageException("You cannot add more elevators! Maximum reached.");
         }
         Elevator elevator = this.elevatorRepository.save(new Elevator());
-
-        Runnable myrunnable = () ->  {
-            new ElevatorThreadStart(this).createThreadForElevator(elevator);
-        };
-        new Thread(myrunnable).start();
+        Executors.newSingleThreadExecutor().submit(() -> this.createThreadForElevator(elevator));
 
         return elevator;
     }
@@ -85,14 +83,14 @@ public class ElevatorService implements IElevatorService  {
     }
 
     @Async
-    public void manageThreadForElevator(Elevator elevator){
+    public void createThreadForElevator(Elevator elevator){
         //TODO: Create one thread for each elevator
         //Updating each elevator inside every thread separately
 
         try {
             Thread.sleep((int)(Math.random()*5000+1));
             System.out.println("test " + elevator.getId());
-            this.manageThreadForElevator(elevator);
+            this.createThreadForElevator(elevator);
 
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

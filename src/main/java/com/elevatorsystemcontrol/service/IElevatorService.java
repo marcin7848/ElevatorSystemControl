@@ -9,6 +9,6 @@ public interface IElevatorService {
     Elevator addNewElevator();
 
     boolean deleteElevator(Long id);
-    void manageThreadForElevator(Elevator elevator);
+    void createThreadForElevator(Elevator elevator);
 
 }
