@@ -1,6 +1,5 @@
 package com.elevatorsystemcontrol.service;
 
-import com.elevatorsystemcontrol.exceptions.MessageException;
 import com.elevatorsystemcontrol.model.Elevator;
 import com.elevatorsystemcontrol.model.ElevatorFloor;
 import com.elevatorsystemcontrol.repository.ElevatorFloorRepository;
@@ -22,14 +21,12 @@ public class ElevatorFloorService implements IElevatorFloorService {
         this.elevatorService = elevatorService;
     }
 
-    /*
+    /**
      * Adds a new elevator floor destination to specified Elevator object
-     * @param   elevatorFloor   The object should contain floor and direction params
-     * @param   elevatorId      The ID of existed elevator in the database
-     * @exception    throws ResponseEntity exception if the database already contains a maximum number of elevators
-     *               defined in MAX_ELEVATORS
-     * @return       ElevatorFloor object created in the database
-     * */
+     * @param elevatorFloor     The object should contain floor and direction params
+     * @param elevatorId        The ID of existed elevator in the database
+     * @return                  ElevatorFloor object created in the database
+     */
     public ElevatorFloor addNewElevatorFloor(ElevatorFloor elevatorFloor, Long elevatorId){
         Elevator elevator = this.elevatorService.getElevator(elevatorId);
         elevatorFloor.setFloorPickTime(Timestamp.from(Instant.now()));

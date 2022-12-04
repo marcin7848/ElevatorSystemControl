@@ -21,7 +21,9 @@ import java.util.concurrent.Executors;
 @Service
 public class ElevatorService implements IElevatorService  {
 
-    //@param MAX_ELEVATORS  define the maximum number of elevators controlled by the system
+    /**
+     * MAX_ELEVATORS  define the maximum number of elevators controlled by the system
+     */
     private final int MAX_ELEVATORS = 16;
     final ElevatorRepository elevatorRepository;
 
@@ -30,32 +32,32 @@ public class ElevatorService implements IElevatorService  {
         this.elevatorRepository = elevatorRepository;
     }
 
-    /*
+    /**
      * Gets all elevators from the database, no params available
      * @return  A List<Elevators> with all elevators
-     * */
+     */
     public List<Elevator> getAll(){
         return this.elevatorRepository.findAll();
     }
 
-    /*
+    /**
      * Get elevator object of the given ID
-     * @param id        elevator's Long ID
-     * @exception       throws ResponseEntity exception if the elevator with the specified ID doesn't exist
-     * @return          Elevator object
-     * */
+     * @param id                    elevator's Long ID
+     * @exception MessageException  throws ResponseEntity exception if the elevator with the specified ID doesn't exist
+     * @return                      Elevator object
+     */
     public Elevator getElevator(Long id){
         return elevatorRepository.findById(id)
                 .orElseThrow(() -> new MessageException("Elevator does not exist!"));
     }
 
-    /*
-    * Adds a new elevator to the system, no params available
-    * After adding the elevator to the database, it starts a thread for managing this elevator
-    * @exception    throws ResponseEntity exception if the database already contains a maximum number of elevators
-    *               defined in MAX_ELEVATORS
-    * @return       Elevator object created in the database
-    * */
+    /**
+     * Adds a new elevator to the system, no params available
+     * After adding the elevator to the database, it starts a thread for managing this elevator
+     * @exception MessageException  throws ResponseEntity exception if the database already contains a maximum number of elevators
+     *                              defined in MAX_ELEVATORS
+     * @return                      Elevator object created in the database
+     */
     public Elevator addNewElevator(){
         if(this.elevatorRepository.count() >= this.MAX_ELEVATORS){
             throw new MessageException("You cannot add more elevators! Maximum reached.");
@@ -66,12 +68,11 @@ public class ElevatorService implements IElevatorService  {
         return elevator;
     }
 
-    /*
+    /**
      * Deletes the elevator of the given ID
-     * @param id   elevator's Long ID to delete
-     * @exception       throws exception in getElevator method if the elevator to delete doesn't exist
-     * @return boolean  true if the elevator has been deleted, false if it has not
-     * */
+     * @param id    elevator's Long ID to delete
+     * @return      true if the elevator has been deleted, false if it has not
+     */
     public boolean deleteElevator(Long id){
         Elevator elevator = this.getElevator(id);
         try{
@@ -83,10 +84,25 @@ public class ElevatorService implements IElevatorService  {
         }
     }
 
+    /**
+     * Manages the asynchronous thread for an elevator. Exceptions are ignored, after catching the thread for
+     * the particular elevator stops.
+     * The currentStatus of the Elevator can be:
+     * - 0          Waiting on the floor: {elevator.currentFloor}
+     * - 1          Going to the floor: {elevator.targetFloors.get(0)}
+     * - 2          Opening doors
+     * - 3          Closing doors
+     * Note that after a change in the current status there is a delay before changing it again.
+     * For the currentStatus==1 the delay is calculated as follows:
+     * 3 seconds * the absolute value of the difference between current floor and target floor
+     *
+     * @param el    The elevator object to start and manage the thread for it
+     */
     @Async
     public void manageThreadForElevator(Elevator el){
         try {
             Elevator elevator = this.getElevator(el.getId());
+            this.sortTargetFloors(elevator);
             switch (elevator.getCurrentStatus()) {
                 case 0 -> {
                     if (elevator.getTargetFloors().size() > 0) {
@@ -118,15 +134,25 @@ public class ElevatorService implements IElevatorService  {
 
             this.manageThreadForElevator(elevator);
 
-
-        } catch (InterruptedException | MessageException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (InterruptedException | MessageException ignored) {}
     }
 
+    /**
+     * Allows to set and save in the database the current status for an elevator
+     * @param currentStatus The status of the elevator to be saved as the next current one
+     * @param elevator      Elevator object for which the status should change
+     */
     private void setElevatorStatus(int currentStatus, Elevator elevator){
         elevator.setCurrentStatus(currentStatus);
         this.elevatorRepository.save(elevator);
+    }
+
+    /**
+     * Sorts target floors for the specified elevator
+     * @param elevator Elevator object
+     */
+    private void sortTargetFloors(Elevator elevator){
+
     }
 
 }
