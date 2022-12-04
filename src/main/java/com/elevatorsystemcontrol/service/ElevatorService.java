@@ -35,7 +35,7 @@ public class ElevatorService implements IElevatorService  {
      * @return  A List<Elevators> with all elevators
      * */
     public List<Elevator> getAll(){
-        return (List<Elevator>) this.elevatorRepository.findAll();
+        return this.elevatorRepository.findAll();
     }
 
     /*
@@ -61,7 +61,7 @@ public class ElevatorService implements IElevatorService  {
             throw new MessageException("You cannot add more elevators! Maximum reached.");
         }
         Elevator elevator = this.elevatorRepository.save(new Elevator());
-        Executors.newSingleThreadExecutor().submit(() -> this.createThreadForElevator(elevator));
+        Executors.newSingleThreadExecutor().submit(() -> this.manageThreadForElevator(elevator));
 
         return elevator;
     }
@@ -84,16 +84,39 @@ public class ElevatorService implements IElevatorService  {
     }
 
     @Async
-    public void createThreadForElevator(Elevator el){
-        //TODO: Create one thread for each elevator
-        //Updating each elevator inside every thread separately
-
+    public void manageThreadForElevator(Elevator el){
         try {
             Elevator elevator = this.getElevator(el.getId());
-            System.out.println(elevator);
-            Thread.sleep((int)(Math.random()*5000+1));
-            System.out.println("test " + elevator.getId());
-            this.createThreadForElevator(elevator);
+            switch (elevator.getCurrentStatus()) {
+                case 0 -> {
+                    if (elevator.getTargetFloors().size() > 0) {
+                        setElevatorStatus(1, elevator);
+                    } else {
+                        Thread.sleep(500);
+                    }
+                }
+                case 1 -> {
+                    Thread.sleep(3000L *
+                            Math.abs(elevator.getCurrentFloor() -
+                                    elevator.getTargetFloors().get(0).getFloor()));
+                    setElevatorStatus(2, elevator);
+                }
+                case 2 -> {
+                    Thread.sleep(5000);
+                    setElevatorStatus(3, elevator);
+                }
+                case 3 -> {
+                    Thread.sleep(3000);
+                    if (elevator.getTargetFloors().size() > 0) {
+                        elevator.setCurrentFloor(elevator.getTargetFloors().get(0).getFloor());
+                        elevator.getTargetFloors().remove(0);
+
+                    }
+                    setElevatorStatus(0, elevator);
+                }
+            }
+
+            this.manageThreadForElevator(elevator);
 
 
         } catch (InterruptedException | MessageException e) {
@@ -101,6 +124,9 @@ public class ElevatorService implements IElevatorService  {
         }
     }
 
-
+    private void setElevatorStatus(int currentStatus, Elevator elevator){
+        elevator.setCurrentStatus(currentStatus);
+        this.elevatorRepository.save(elevator);
+    }
 
 }

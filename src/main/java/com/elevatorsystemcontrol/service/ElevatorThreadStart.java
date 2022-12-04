@@ -22,7 +22,7 @@ public class ElevatorThreadStart {
     * */
     @EventListener(ApplicationReadyEvent.class)
     public void manageElevatorsTask() {
-        this.elevatorService.getAll().forEach(elevatorService::createThreadForElevator);
+        this.elevatorService.getAll().forEach(elevatorService::manageThreadForElevator);
     }
 
 }

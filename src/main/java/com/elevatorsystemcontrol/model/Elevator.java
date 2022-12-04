@@ -29,11 +29,10 @@ public class Elevator {
     @Column(name = "current_status")
     private int currentStatus = 0;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "elevator", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "elevator", cascade = CascadeType.ALL, orphanRemoval=true)
     @Fetch(value = FetchMode.SUBSELECT)
     private List<ElevatorFloor> targetFloors;
 
-    @Version
-    private Integer version;
+
 
 }

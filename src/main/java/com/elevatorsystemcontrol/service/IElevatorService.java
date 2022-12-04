@@ -13,6 +13,6 @@ public interface IElevatorService {
 
     boolean deleteElevator(Long id);
 
-    void createThreadForElevator(Elevator elevator);
+    void manageThreadForElevator(Elevator elevator);
 
 }
