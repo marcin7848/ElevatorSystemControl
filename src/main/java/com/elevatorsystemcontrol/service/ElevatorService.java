@@ -1,5 +1,6 @@
 package com.elevatorsystemcontrol.service;
 
+import com.elevatorsystemcontrol.exceptions.FieldNameAndMessageException;
 import com.elevatorsystemcontrol.exceptions.MessageException;
 import com.elevatorsystemcontrol.model.Elevator;
 import com.elevatorsystemcontrol.repository.ElevatorRepository;
@@ -39,7 +40,7 @@ public class ElevatorService implements IElevatorService  {
 
     /*
      * Get elevator object of the given ID
-     * @param id   elevator's Long ID
+     * @param id        elevator's Long ID
      * @exception       throws ResponseEntity exception if the elevator with the specified ID doesn't exist
      * @return          Elevator object
      * */
@@ -74,25 +75,28 @@ public class ElevatorService implements IElevatorService  {
     public boolean deleteElevator(Long id){
         Elevator elevator = this.getElevator(id);
         try{
-            this.elevatorRepository.delete(elevator);
-            this.getElevator(id);
-            return false;
-        }catch (Exception e){
+            this.elevatorRepository.deleteElevatorById(elevator.getId());
+            this.elevatorRepository.flush();
             return true;
+        }catch (Exception e){
+            return false;
         }
     }
 
     @Async
-    public void createThreadForElevator(Elevator elevator){
+    public void createThreadForElevator(Elevator el){
         //TODO: Create one thread for each elevator
         //Updating each elevator inside every thread separately
 
         try {
+            Elevator elevator = this.getElevator(el.getId());
+            System.out.println(elevator);
             Thread.sleep((int)(Math.random()*5000+1));
             System.out.println("test " + elevator.getId());
             this.createThreadForElevator(elevator);
 
-        } catch (InterruptedException e) {
+
+        } catch (InterruptedException | MessageException e) {
             throw new RuntimeException(e);
         }
     }
