@@ -188,6 +188,47 @@ public class ElevatorService implements IElevatorService  {
         if(updatedElevator.getTargetFloors().size() < 1)
             return elevator;
 
+        int direction = updatedElevator.getCurrentFloor() <= updatedElevator.getTargetFloors().get(0).getFloor()? 1 : -1;
+
+        if(direction == 1)
+            updatedElevator.getTargetFloors().sort(Comparator.comparing(ElevatorFloor::getFloor));
+        else
+            updatedElevator.getTargetFloors().sort(Comparator.comparing(ElevatorFloor::getFloor).reversed());
+
+
+/*        System.out.print("Direction: ");
+        System.out.println(direction);*/
+        List<Long> elevatorFloorIdsBetween = new ArrayList<>();
+        updatedElevator.getTargetFloors().forEach(tf -> {
+/*            System.out.print("Id: ");
+            System.out.print(tf.getId());
+            System.out.print(" Floor: ");
+            System.out.print(tf.getFloor());
+            System.out.print(" Position: ");
+            System.out.print(tf.getPosition());
+            System.out.println();*/
+
+            if(direction == 1 && tf.getFloor() >= updatedElevator.getCurrentFloor()){
+                elevatorFloorIdsBetween.add(tf.getId());
+            }
+            else if(direction == -1 && tf.getFloor() <= updatedElevator.getCurrentFloor()){
+                elevatorFloorIdsBetween.add(tf.getId());
+            }
+        });
+
+        int[] order = {0, elevatorFloorIdsBetween.size()};
+        updatedElevator.getTargetFloors().forEach(targetFloor -> {
+            if(elevatorFloorIdsBetween.contains(targetFloor.getId())){
+                targetFloor.setPosition(order[0]);
+                order[0] = order[0]+1;
+            } else {
+                targetFloor.setPosition(order[1]);
+                order[1] = order[1]+1;
+            }
+        });
+
+
+        /*
         ElevatorFloor elevatorFloor = this.getClosestElevatorFloorInElevator(updatedElevator);
         if(elevatorFloor == null)
             return elevator;
@@ -230,8 +271,11 @@ public class ElevatorService implements IElevatorService  {
                 order[1] = order[1]+1;
             }
         });
-
-        return this.elevatorRepository.save(updatedElevator);
+*/
+        //return elevator;
+        Elevator resortedElevator = this.elevatorRepository.save(updatedElevator);
+        resortedElevator.getTargetFloors().sort(Comparator.comparing(ElevatorFloor::getPosition));
+        return resortedElevator;
     }
 
     private ElevatorFloor getClosestElevatorFloorInElevator(Elevator elevator){
