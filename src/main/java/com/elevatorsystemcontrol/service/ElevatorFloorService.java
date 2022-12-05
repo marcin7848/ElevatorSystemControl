@@ -49,7 +49,6 @@ public class ElevatorFloorService implements IElevatorFloorService {
         elevatorFloor.setFloorPickTime(Timestamp.from(Instant.now()));
         elevatorFloor.setElevator(elevator);
         elevatorFloor.setPosition(this.getHighestElevatorFloorPositionByElevator(elevator)+1);
-        System.out.println(elevatorFloor.getPosition());
         return this.elevatorFloorRepository.save(elevatorFloor);
     }
 
