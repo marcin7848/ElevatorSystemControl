@@ -192,15 +192,34 @@ public class ElevatorService implements IElevatorService  {
         if(elevatorFloor == null)
             return elevator;
 
-        int[] order = {2};
+        List<Long> elevatorFloorIdsBetween = new ArrayList<>();
+
+        if(updatedElevator.getCurrentFloor() <= elevatorFloor.getFloor()) {
+            updatedElevator.getTargetFloors().sort(Comparator.comparing(ElevatorFloor::getPosition));
+            updatedElevator.getTargetFloors().forEach(tf -> {
+                if(tf.getFloor() >= updatedElevator.getCurrentFloor() && tf.getFloor() <= elevatorFloor.getFloor()){
+                    elevatorFloorIdsBetween.add(tf.getId());
+                }
+            });
+        } else {
+            updatedElevator.getTargetFloors().sort(Comparator.comparing(ElevatorFloor::getPosition).reversed());
+
+            updatedElevator.getTargetFloors().forEach(tf -> {
+                if(tf.getFloor() <= updatedElevator.getCurrentFloor() && tf.getFloor() >= elevatorFloor.getFloor()){
+                    elevatorFloorIdsBetween.add(tf.getId());
+                }
+            });
+        }
+
+
+        int[] order = {0, elevatorFloorIdsBetween.size()};
         updatedElevator.getTargetFloors().forEach(targetFloor -> {
-            if(targetFloor.getId().equals(elevatorFloor.getId())){
-                targetFloor.setPosition(0);
-            } else if (targetFloor.getId().equals(updatedElevator.getTargetFloors().get(0).getId())) {
-                targetFloor.setPosition(1);
-            } else{
+            if(elevatorFloorIdsBetween.contains(targetFloor.getId())){
                 targetFloor.setPosition(order[0]);
-                order[0] = order[0] + 1;
+                order[0] = order[0]+1;
+            } else {
+                targetFloor.setPosition(order[1]);
+                order[1] = order[1]+1;
             }
         });
 
