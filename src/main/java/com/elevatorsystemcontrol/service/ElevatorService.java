@@ -101,6 +101,8 @@ public class ElevatorService implements IElevatorService  {
      * Note that after a change in the current status there is a delay before changing it again.
      * For the currentStatus==1 the delay is calculated as follows:
      * 3 seconds per floor between the current floor (startFloor) and the target floor (endFloor)
+     * if the target floor was changed during elevator's movement, changing current floor stops
+     * and status is not updated until the next iteration
      *
      * @param el    The elevator object to start and manage the thread for it
      */
