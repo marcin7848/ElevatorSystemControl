@@ -195,23 +195,14 @@ public class ElevatorService implements IElevatorService  {
         else
             updatedElevator.getTargetFloors().sort(Comparator.comparing(ElevatorFloor::getFloor).reversed());
 
-
-/*        System.out.print("Direction: ");
-        System.out.println(direction);*/
         List<Long> elevatorFloorIdsBetween = new ArrayList<>();
         updatedElevator.getTargetFloors().forEach(tf -> {
-/*            System.out.print("Id: ");
-            System.out.print(tf.getId());
-            System.out.print(" Floor: ");
-            System.out.print(tf.getFloor());
-            System.out.print(" Position: ");
-            System.out.print(tf.getPosition());
-            System.out.println();*/
-
-            if(direction == 1 && tf.getFloor() >= updatedElevator.getCurrentFloor()){
+            if(direction == 1 && tf.getFloor() >= updatedElevator.getCurrentFloor()
+                    && (tf.getDirection() == 0 || tf.getDirection() == direction)){
                 elevatorFloorIdsBetween.add(tf.getId());
             }
-            else if(direction == -1 && tf.getFloor() <= updatedElevator.getCurrentFloor()){
+            else if(direction == -1 && tf.getFloor() <= updatedElevator.getCurrentFloor()
+                    && (tf.getDirection() == 0 || tf.getDirection() == direction)){
                 elevatorFloorIdsBetween.add(tf.getId());
             }
         });
@@ -227,79 +218,9 @@ public class ElevatorService implements IElevatorService  {
             }
         });
 
-
-        /*
-        ElevatorFloor elevatorFloor = this.getClosestElevatorFloorInElevator(updatedElevator);
-        if(elevatorFloor == null)
-            return elevator;
-
-        List<Long> elevatorFloorIdsBetween = new ArrayList<>();
-        int direction = updatedElevator.getCurrentFloor() < elevatorFloor.getFloor() ? 1 : -1;
-
-        if(updatedElevator.getCurrentFloor() <= elevatorFloor.getFloor()) {
-            updatedElevator.getTargetFloors().sort(Comparator.comparing(ElevatorFloor::getPosition));
-
-            updatedElevator.getTargetFloors().forEach(tf -> {
-                if(tf.getFloor() >= updatedElevator.getCurrentFloor()
-                        && tf.getFloor() <= elevatorFloor.getFloor()
-                        && (tf.getDirection() == 0 || tf.getDirection() == direction)
-                ){
-                    elevatorFloorIdsBetween.add(tf.getId());
-                }
-            });
-        } else {
-            updatedElevator.getTargetFloors().sort(Comparator.comparing(ElevatorFloor::getPosition).reversed());
-
-            updatedElevator.getTargetFloors().forEach(tf -> {
-                if(tf.getFloor() <= updatedElevator.getCurrentFloor()
-                        && tf.getFloor() >= elevatorFloor.getFloor()
-                        && (tf.getDirection() == 0 || tf.getDirection() == direction)
-                ){
-                    elevatorFloorIdsBetween.add(tf.getId());
-                }
-            });
-        }
-
-
-        int[] order = {0, elevatorFloorIdsBetween.size()};
-        updatedElevator.getTargetFloors().forEach(targetFloor -> {
-            if(elevatorFloorIdsBetween.contains(targetFloor.getId())){
-                targetFloor.setPosition(order[0]);
-                order[0] = order[0]+1;
-            } else {
-                targetFloor.setPosition(order[1]);
-                order[1] = order[1]+1;
-            }
-        });
-*/
-        //return elevator;
         Elevator resortedElevator = this.elevatorRepository.save(updatedElevator);
         resortedElevator.getTargetFloors().sort(Comparator.comparing(ElevatorFloor::getPosition));
         return resortedElevator;
     }
-
-    private ElevatorFloor getClosestElevatorFloorInElevator(Elevator elevator){
-        if(elevator.getTargetFloors().isEmpty())
-            return null;
-
-        int currentFloor = elevator.getCurrentFloor();
-        ElevatorFloor currentTargetFloor = elevator.getTargetFloors().get(0);
-        int direction = currentFloor < currentTargetFloor.getFloor() ? 1 : -1;
-
-        int range = (currentFloor + currentTargetFloor.getFloor()) / 2;
-        List<ElevatorFloor> elevatorFloorsInRange = elevator.getTargetFloors().stream().filter(ef ->
-                Math.abs(ef.getFloor() - range) <= Math.abs(currentFloor - range)
-                && !ef.getId().equals(elevator.getTargetFloors().get(0).getId())
-                && (ef.getDirection() == 0 || ef.getDirection() == direction)
-        ).toList();
-
-        if(elevatorFloorsInRange.isEmpty())
-            return null;
-
-        return elevator.getTargetFloors().stream().min(
-                Comparator.comparingInt(f -> Math.abs(f.getFloor() - currentFloor))
-        ).get();
-
-    }
-
+    
 }
