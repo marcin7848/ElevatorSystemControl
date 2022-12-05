@@ -53,7 +53,7 @@ public class ElevatorFloor {
     @Column(name = "floor_pick_time")
     private Timestamp floorPickTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     @JoinColumn(name = "id_elevator")
     @JsonBackReference
     private Elevator elevator;

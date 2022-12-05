@@ -21,7 +21,7 @@ export class AppService {
 
   openSnackBarError(httpError: HttpErrorResponse) {
     let message = "";
-    if(httpError.error.errors.length > 0){
+    if(httpError.error.errors && httpError.error.errors.length > 0){
       message = httpError.error.errors.reduce((prevErr:string, err:string)=> {
         return prevErr + ' | ' + err;
       });

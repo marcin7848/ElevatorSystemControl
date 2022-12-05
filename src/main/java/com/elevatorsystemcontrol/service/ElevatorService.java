@@ -75,9 +75,12 @@ public class ElevatorService implements IElevatorService  {
      */
     public boolean deleteElevator(Long id){
         Elevator elevator = this.getElevator(id);
+        if(elevator.getTargetFloors().size() > 0){
+            throw new MessageException("The elevator must stop and " +
+                    "target floors list must be empty to delete the elevator");
+        }
         try{
             this.elevatorRepository.deleteElevatorById(elevator.getId());
-            this.elevatorRepository.flush();
             return true;
         }catch (Exception e){
             return false;
