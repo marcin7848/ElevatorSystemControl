@@ -43,7 +43,8 @@ export class ManagementComponent implements OnInit {
           elevator.selectedFloors = [];
           this.elevators.push(elevator);
           this.appService.openSnackBar("A new elevator has been added!");
-          this.addNewElevatorDisabled = false;
+          if(this.elevators.length < this.MAX_ELEVATORS)
+            this.addNewElevatorDisabled = false;
         },
         error: msg => {
           this.appService.openSnackBarError(msg);
