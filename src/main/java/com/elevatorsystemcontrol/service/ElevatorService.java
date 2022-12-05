@@ -3,6 +3,7 @@ package com.elevatorsystemcontrol.service;
 import com.elevatorsystemcontrol.exceptions.FieldNameAndMessageException;
 import com.elevatorsystemcontrol.exceptions.MessageException;
 import com.elevatorsystemcontrol.model.Elevator;
+import com.elevatorsystemcontrol.model.ElevatorFloor;
 import com.elevatorsystemcontrol.repository.ElevatorRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +14,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 public class ElevatorService implements IElevatorService  {
@@ -71,7 +73,7 @@ public class ElevatorService implements IElevatorService  {
     /**
      * Deletes the elevator of the given ID
      * @param id                        elevator's Long ID to delete
-     * @exception MessageException      throws exception if List<TargetFloor> is not empty
+     * @exception MessageException      throws an exception if List<TargetFloor> is not empty
      * @return                          true if the elevator has been deleted, false if it has not
      */
     public boolean deleteElevator(Long id){
@@ -116,21 +118,37 @@ public class ElevatorService implements IElevatorService  {
                     }
                 }
                 case 1 -> {
-                    Thread.sleep(3000L *
-                            Math.abs(elevator.getCurrentFloor() -
-                                    elevator.getTargetFloors().get(0).getFloor()));
+                    int startFloor = elevator.getCurrentFloor();
+                    int endFloor = elevator.getTargetFloors().get(0).getFloor();
+                    int[] floorsBetween = IntStream.range(startFloor, endFloor).toArray();
+
+                    if(startFloor > endFloor){
+                        startFloor = endFloor+1;
+                        endFloor = elevator.getCurrentFloor()+1;
+                        floorsBetween = IntStream.range(startFloor, endFloor).boxed().
+                                sorted(Comparator.reverseOrder()).mapToInt(i -> i).toArray();
+                    }
+
+                    System.out.println(Arrays.toString(floorsBetween));
+
+                    for(int currFloor : floorsBetween){
+                        elevator.setCurrentFloor(currFloor);
+                        this.elevatorRepository.save(elevator);
+                        Thread.sleep(3000L);
+                    }
+
                     setElevatorStatus(2, elevator);
                 }
                 case 2 -> {
+                    elevator.setCurrentFloor(elevator.getTargetFloors().get(0).getFloor());
+                    this.elevatorRepository.save(elevator);
                     Thread.sleep(5000);
                     setElevatorStatus(3, elevator);
                 }
                 case 3 -> {
                     Thread.sleep(3000);
                     if (elevator.getTargetFloors().size() > 0) {
-                        elevator.setCurrentFloor(elevator.getTargetFloors().get(0).getFloor());
                         elevator.getTargetFloors().remove(0);
-
                     }
                     setElevatorStatus(0, elevator);
                 }
@@ -156,6 +174,34 @@ public class ElevatorService implements IElevatorService  {
      * @param elevator Elevator object
      */
     private void sortTargetFloors(Elevator elevator){
+        if(elevator.getTargetFloors().size() < 2)
+            return;
+
+        //ElevatorFloor elevatorFloor = this.getClosestElevatorFloorInElevator(elevator);
+
+
+
+    }
+
+    private ElevatorFloor getClosestElevatorFloorInElevator(Elevator elevator){
+        if(elevator.getTargetFloors().isEmpty())
+            return null;
+
+        int currentFloor = elevator.getCurrentFloor();
+        ElevatorFloor currentTargetFloor = elevator.getTargetFloors().get(0);
+
+        int range = (currentFloor + currentTargetFloor.getFloor()) / 2;
+        List<ElevatorFloor> elevatorFloorsInRange = elevator.getTargetFloors().stream().filter(ef ->
+                Math.abs(ef.getFloor() - range) <= Math.abs(currentFloor - range)
+                        && !currentTargetFloor.getId().equals(ef.getId())
+        ).toList();
+
+        if(elevatorFloorsInRange.isEmpty())
+            return null;
+
+        return elevator.getTargetFloors().stream().min(
+                Comparator.comparingInt(f -> Math.abs(f.getFloor() - currentFloor))
+        ).get();
 
     }
 
