@@ -37,7 +37,7 @@ export class ElevatorComponent implements OnInit {
     this.elevatorService.addNewElevatorFloor(new ElevatorFloor(0, floor, direction), this.elevator.id!)
       .subscribe({
         next: (elevatorFloor) => {
-          this.elevator.targetFloors!.push(elevatorFloor);
+          this.elevator.selectedFloors!.push(elevatorFloor);
         },
         error: msg => {
           this.appService.openSnackBarError(msg);

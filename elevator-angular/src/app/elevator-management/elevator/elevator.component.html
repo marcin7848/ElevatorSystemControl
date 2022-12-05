@@ -21,7 +21,7 @@
         <mat-card-content>
           <span>Next floor</span>
           <hr/>
-          <span class="floor-number-text">{{elevator.targetFloors?.at(0)?.floor}}</span>
+          <span class="floor-number-text">{{elevator.selectedFloors?.at(0)?.floor}}</span>
         </mat-card-content>
       </mat-card>
     </div>
@@ -30,7 +30,7 @@
       <span>Current status:
         <ng-container [ngSwitch]="elevator.currentStatus">
           <ng-container *ngSwitchCase="0">Waiting on the floor {{elevator.currentFloor}}</ng-container>
-          <ng-container *ngSwitchCase="1">Going to the floor {{elevator.targetFloors?.at(0)?.floor}}</ng-container>
+          <ng-container *ngSwitchCase="1">Going to the floor {{elevator.selectedFloors?.at(0)?.floor}}</ng-container>
           <ng-container *ngSwitchCase="2">Opening doors</ng-container>
           <ng-container *ngSwitchCase="3">Closing doors</ng-container>
           <ng-container *ngSwitchDefault></ng-container>
@@ -39,9 +39,9 @@
     </div>
     <hr/>
     <div class="elevator-box-text">
-      <span>Target floors in order:
-        <ng-container *ngFor="let targetFloor of elevator.targetFloors; last as isLast">
-          {{targetFloor.floor}}<ng-container *ngIf="!isLast">, </ng-container>
+      <span>Selected floors in order:
+        <ng-container *ngFor="let selectedFloor of elevator.selectedFloors; last as isLast">
+          {{selectedFloor.floor}}<ng-container *ngIf="!isLast">, </ng-container>
         </ng-container>
       </span>
     </div>

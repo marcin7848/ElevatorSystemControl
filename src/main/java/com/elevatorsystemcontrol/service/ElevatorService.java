@@ -73,14 +73,14 @@ public class ElevatorService implements IElevatorService  {
     /**
      * Deletes the elevator of the given ID
      * @param id                        elevator's Long ID to delete
-     * @exception MessageException      throws an exception if List<TargetFloor> is not empty
+     * @exception MessageException      throws an exception if List<SelectedFloor> is not empty
      * @return                          true if the elevator has been deleted, false if it has not
      */
     public boolean deleteElevator(Long id){
         Elevator elevator = this.getElevator(id);
-        if(elevator.getTargetFloors().size() > 0){
+        if(elevator.getSelectedFloors().size() > 0){
             throw new MessageException("The elevator must stop and " +
-                    "target floors list must be empty to delete the elevator");
+                    "selected floors list must be empty to delete the elevator");
         }
         try{
             this.elevatorRepository.deleteElevatorById(elevator.getId());
@@ -95,13 +95,13 @@ public class ElevatorService implements IElevatorService  {
      * the particular elevator stops.
      * The currentStatus of the Elevator can be:
      * - 0          Waiting on the floor: {elevator.currentFloor}
-     * - 1          Going to the floor: {elevator.targetFloors.get(0)}
+     * - 1          Going to the floor: {elevator.selectedFloors.get(0)}
      * - 2          Opening doors
      * - 3          Closing doors
      * Note that after a change in the current status there is a delay before changing it again.
      * For the currentStatus==1 the delay is calculated as follows:
-     * 3 seconds per floor between the current floor (startFloor) and the target floor (endFloor)
-     * if the target floor was changed during elevator's movement, changing current floor stops
+     * 3 seconds per floor between the current floor (startFloor) and the selected floor (endFloor)
+     * if the selected floor was changed during elevator's movement, changing current floor stops
      * and status is not updated until the next iteration
      *
      * @param el    The elevator object to start and manage the thread for it
@@ -112,16 +112,16 @@ public class ElevatorService implements IElevatorService  {
             Elevator elevator = this.getElevator(el.getId());
             switch (elevator.getCurrentStatus()) {
                 case 0 -> {
-                    if (elevator.getTargetFloors().size() > 0) {
+                    if (elevator.getSelectedFloors().size() > 0) {
                         setElevatorStatus(1, elevator);
                     } else {
                         Thread.sleep(500);
                     }
                 }
                 case 1 -> {
-                    elevator = this.sortTargetFloors(elevator);
+                    elevator = this.sortSelectedFloors(elevator);
                     int startFloor = elevator.getCurrentFloor();
-                    int endFloor = elevator.getTargetFloors().get(0).getFloor();
+                    int endFloor = elevator.getSelectedFloors().get(0).getFloor();
                     int[] floorsBetween = IntStream.range(startFloor, endFloor).toArray();
 
                     if(startFloor > endFloor){
@@ -131,36 +131,36 @@ public class ElevatorService implements IElevatorService  {
                                 sorted(Comparator.reverseOrder()).mapToInt(i -> i).toArray();
                     }
 
-                    Long targetElevatorFloorId = elevator.getTargetFloors().get(0).getId();
+                    Long selectedElevatorFloorId = elevator.getSelectedFloors().get(0).getId();
 
                     for(int currFloor : floorsBetween){
                         elevator.setCurrentFloor(currFloor);
                         this.elevatorRepository.save(elevator);
                         Thread.sleep(3000L);
 
-                        elevator = this.sortTargetFloors(elevator);
+                        elevator = this.sortSelectedFloors(elevator);
 
-                        if(!targetElevatorFloorId.equals(this.getElevator(elevator.getId()).getTargetFloors().get(0).getId())){
+                        if(!selectedElevatorFloorId.equals(this.getElevator(elevator.getId()).getSelectedFloors().get(0).getId())){
                             break;
                         }
                     }
 
-                    if(targetElevatorFloorId.equals(this.getElevator(elevator.getId()).getTargetFloors().get(0).getId())){
+                    if(selectedElevatorFloorId.equals(this.getElevator(elevator.getId()).getSelectedFloors().get(0).getId())){
                         setElevatorStatus(2, elevator);
                     }
                 }
                 case 2 -> {
-                    elevator.setCurrentFloor(elevator.getTargetFloors().get(0).getFloor());
+                    elevator.setCurrentFloor(elevator.getSelectedFloors().get(0).getFloor());
                     this.elevatorRepository.save(elevator);
                     Thread.sleep(5000);
                     setElevatorStatus(3, elevator);
                 }
                 case 3 -> {
                     Thread.sleep(3000);
-                    if (elevator.getTargetFloors().size() > 0) {
-                        int removeFloor = elevator.getTargetFloors().get(0).getFloor();
-                        elevator.getTargetFloors().removeAll(
-                                elevator.getTargetFloors().stream().filter(x -> x.getFloor() == removeFloor).toList());
+                    if (elevator.getSelectedFloors().size() > 0) {
+                        int removeFloor = elevator.getSelectedFloors().get(0).getFloor();
+                        elevator.getSelectedFloors().removeAll(
+                                elevator.getSelectedFloors().stream().filter(x -> x.getFloor() == removeFloor).toList());
                     }
                     setElevatorStatus(0, elevator);
                 }
@@ -183,11 +183,11 @@ public class ElevatorService implements IElevatorService  {
 
 
     /**
-     * Sorts the targetFloors for the specified elevator object
-     * Managing the next target floor for an elevator works as follows:
-     * - if there is no target floors, the elevator waits on the last floor where it was
-     * - if there is only 1 target floor, the elevator should go there
-     * - is there are 2 or more target floors, the algorithm proceeds as follows:
+     * Sorts the selectedFloors for the specified elevator object
+     * Managing the next selected floor for an elevator works as follows:
+     * - if there is no selected floors, the elevator waits on the last floor where it was
+     * - if there is only 1 selected floor, the elevator should go there
+     * - is there are 2 or more selected floors, the algorithm proceeds as follows:
      *  for the selected floors inside the elevator:
      *  - go to the first selected floor unless there is another selected floor chosen INSIDE the elevator BETWEEN
      *    the current floor and the current selected floor - if so: change the current selected floor to the one in-between
@@ -196,23 +196,23 @@ public class ElevatorService implements IElevatorService  {
      *    the current floor and the current selected floor and the DIRECTION of the chosen floor outside the elevator is
      *    the SAME as the current elevator movement - if so: change the current selected floor to the one in between
      *
-     * @param elevator  Elevator object for which targetFloors are sorted
-     * @return          Updated elevator object with targetFloors sorted by position field
+     * @param elevator  Elevator object for which selectedFloors are sorted
+     * @return          Updated elevator object with selectedFloors sorted by position field
      */
-    private Elevator sortTargetFloors(Elevator elevator){
+    private Elevator sortSelectedFloors(Elevator elevator){
         Elevator updatedElevator = this.getElevator(elevator.getId());
-        if(updatedElevator.getTargetFloors().size() < 1)
+        if(updatedElevator.getSelectedFloors().size() < 1)
             return elevator;
 
-        int direction = updatedElevator.getCurrentFloor() <= updatedElevator.getTargetFloors().get(0).getFloor()? 1 : -1;
+        int direction = updatedElevator.getCurrentFloor() <= updatedElevator.getSelectedFloors().get(0).getFloor()? 1 : -1;
 
         if(direction == 1)
-            updatedElevator.getTargetFloors().sort(Comparator.comparing(ElevatorFloor::getFloor));
+            updatedElevator.getSelectedFloors().sort(Comparator.comparing(ElevatorFloor::getFloor));
         else
-            updatedElevator.getTargetFloors().sort(Comparator.comparing(ElevatorFloor::getFloor).reversed());
+            updatedElevator.getSelectedFloors().sort(Comparator.comparing(ElevatorFloor::getFloor).reversed());
 
         List<Long> elevatorFloorIdsBetween = new ArrayList<>();
-        updatedElevator.getTargetFloors().forEach(tf -> {
+        updatedElevator.getSelectedFloors().forEach(tf -> {
             if(direction == 1 && tf.getFloor() >= updatedElevator.getCurrentFloor()
                     && (tf.getDirection() == 0 || tf.getDirection() == direction)){
                 elevatorFloorIdsBetween.add(tf.getId());
@@ -224,18 +224,18 @@ public class ElevatorService implements IElevatorService  {
         });
 
         int[] order = {0, elevatorFloorIdsBetween.size()};
-        updatedElevator.getTargetFloors().forEach(targetFloor -> {
-            if(elevatorFloorIdsBetween.contains(targetFloor.getId())){
-                targetFloor.setPosition(order[0]);
+        updatedElevator.getSelectedFloors().forEach(selectedFloor -> {
+            if(elevatorFloorIdsBetween.contains(selectedFloor.getId())){
+                selectedFloor.setPosition(order[0]);
                 order[0] = order[0]+1;
             } else {
-                targetFloor.setPosition(order[1]);
+                selectedFloor.setPosition(order[1]);
                 order[1] = order[1]+1;
             }
         });
 
         Elevator resortedElevator = this.elevatorRepository.save(updatedElevator);
-        resortedElevator.getTargetFloors().sort(Comparator.comparing(ElevatorFloor::getPosition));
+        resortedElevator.getSelectedFloors().sort(Comparator.comparing(ElevatorFloor::getPosition));
         return resortedElevator;
     }
 

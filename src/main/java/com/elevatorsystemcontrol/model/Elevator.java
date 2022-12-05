@@ -31,6 +31,6 @@ public class Elevator {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "elevator", cascade = CascadeType.ALL, orphanRemoval=true)
     @OrderBy("position ASC")
-    private List<ElevatorFloor> targetFloors;
+    private List<ElevatorFloor> selectedFloors;
 
 }

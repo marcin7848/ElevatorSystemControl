@@ -31,11 +31,11 @@ public class ElevatorFloorService implements IElevatorFloorService {
      */
     public int getHighestElevatorFloorPositionByElevator(Elevator elevator){
         Elevator elevator1 = this.elevatorService.getElevator(elevator.getId());
-        if(elevator1.getTargetFloors().size() == 0)
+        if(elevator1.getSelectedFloors().size() == 0)
             return -1;
 
-        elevator1.getTargetFloors().sort(Comparator.comparing(ElevatorFloor::getPosition).reversed());
-        return elevator1.getTargetFloors().get(0).getPosition();
+        elevator1.getSelectedFloors().sort(Comparator.comparing(ElevatorFloor::getPosition).reversed());
+        return elevator1.getSelectedFloors().get(0).getPosition();
     }
 
     /**

@@ -4,13 +4,13 @@ export class Elevator {
   id: number | undefined;
   currentFloor: number | undefined;
   currentStatus: number | undefined;
-  targetFloors: ElevatorFloor[] | undefined;
+  selectedFloors: ElevatorFloor[] | undefined;
 
 
-  constructor(id?: number, currentFloor?: number, currentStatus?: number, targetFloors?: ElevatorFloor[]) {
+  constructor(id?: number, currentFloor?: number, currentStatus?: number, selectedFloors?: ElevatorFloor[]) {
     this.id = id;
     this.currentFloor = currentFloor;
     this.currentStatus = currentStatus;
-    this.targetFloors = targetFloors;
+    this.selectedFloors = selectedFloors;
   }
 }

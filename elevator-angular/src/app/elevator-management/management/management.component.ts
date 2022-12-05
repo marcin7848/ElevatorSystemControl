@@ -40,7 +40,7 @@ export class ManagementComponent implements OnInit {
     this.elevatorService.addNewElevator()
       .subscribe({
         next: (elevator) => {
-          elevator.targetFloors = [];
+          elevator.selectedFloors = [];
           this.elevators.push(elevator);
           this.appService.openSnackBar("A new elevator has been added!");
           this.addNewElevatorDisabled = false;
@@ -92,7 +92,7 @@ export class ManagementComponent implements OnInit {
 
       elevator.currentFloor = elevators[index].currentFloor;
       elevator.currentStatus = elevators[index].currentStatus;
-      elevator.targetFloors = elevators[index].targetFloors;
+      elevator.selectedFloors = elevators[index].selectedFloors;
     });
   }
 
