@@ -19,7 +19,7 @@ node {
 
 val npmInstallTask = tasks.named<NpmInstallTask>("npmInstall")
 
-val buildNpm = tasks.register<NpmTask>("buildNpm") {
+tasks.register<NpmTask>("buildNpm") {
   dependsOn(npmInstallTask)
   npmCommand.set(listOf("run", "build"))
 }
