@@ -48,6 +48,8 @@ public class ElevatorFloor {
     @Max(2)
     private int direction = 0;
 
+    @Column(name = "position")
+    private int position = 0;
     @Column(name = "floor_pick_time")
     private Timestamp floorPickTime;
 

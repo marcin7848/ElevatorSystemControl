@@ -31,8 +31,7 @@ public class Elevator {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "elevator", cascade = CascadeType.ALL, orphanRemoval=true)
     @Fetch(value = FetchMode.SUBSELECT)
+    @OrderBy("position ASC")
     private List<ElevatorFloor> targetFloors;
-
-
 
 }
