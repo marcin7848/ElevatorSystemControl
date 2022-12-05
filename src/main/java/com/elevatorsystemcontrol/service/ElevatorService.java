@@ -158,7 +158,9 @@ public class ElevatorService implements IElevatorService  {
                 case 3 -> {
                     Thread.sleep(3000);
                     if (elevator.getTargetFloors().size() > 0) {
-                        elevator.getTargetFloors().remove(0);
+                        int removeFloor = elevator.getTargetFloors().get(0).getFloor();
+                        elevator.getTargetFloors().removeAll(
+                                elevator.getTargetFloors().stream().filter(x -> x.getFloor() == removeFloor).toList());
                     }
                     setElevatorStatus(0, elevator);
                 }
@@ -222,5 +224,5 @@ public class ElevatorService implements IElevatorService  {
         resortedElevator.getTargetFloors().sort(Comparator.comparing(ElevatorFloor::getPosition));
         return resortedElevator;
     }
-    
+
 }
