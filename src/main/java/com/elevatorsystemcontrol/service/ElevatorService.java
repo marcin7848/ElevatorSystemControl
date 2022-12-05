@@ -110,7 +110,6 @@ public class ElevatorService implements IElevatorService  {
     public void manageThreadForElevator(Elevator el){
         try {
             Elevator elevator = this.getElevator(el.getId());
-            this.sortTargetFloors(elevator);
             switch (elevator.getCurrentStatus()) {
                 case 0 -> {
                     if (elevator.getTargetFloors().size() > 0) {
@@ -120,6 +119,7 @@ public class ElevatorService implements IElevatorService  {
                     }
                 }
                 case 1 -> {
+                    elevator = this.sortTargetFloors(elevator);
                     int startFloor = elevator.getCurrentFloor();
                     int endFloor = elevator.getTargetFloors().get(0).getFloor();
                     int[] floorsBetween = IntStream.range(startFloor, endFloor).toArray();
@@ -137,6 +137,9 @@ public class ElevatorService implements IElevatorService  {
                         elevator.setCurrentFloor(currFloor);
                         this.elevatorRepository.save(elevator);
                         Thread.sleep(3000L);
+
+                        elevator = this.sortTargetFloors(elevator);
+
                         if(!targetElevatorFloorId.equals(this.getElevator(elevator.getId()).getTargetFloors().get(0).getId())){
                             break;
                         }
@@ -180,14 +183,28 @@ public class ElevatorService implements IElevatorService  {
      * Sorts target floors for the specified elevator
      * @param elevator Elevator object
      */
-    private void sortTargetFloors(Elevator elevator){
-        if(elevator.getTargetFloors().size() < 2)
-            return;
+    private Elevator sortTargetFloors(Elevator elevator){
+        Elevator updatedElevator = this.getElevator(elevator.getId());
+        if(updatedElevator.getTargetFloors().size() < 1)
+            return elevator;
 
-        ElevatorFloor elevatorFloor = this.getClosestElevatorFloorInElevator(elevator);
+        ElevatorFloor elevatorFloor = this.getClosestElevatorFloorInElevator(updatedElevator);
+        if(elevatorFloor == null)
+            return elevator;
 
+        int[] order = {2};
+        updatedElevator.getTargetFloors().forEach(targetFloor -> {
+            if(targetFloor.getId().equals(elevatorFloor.getId())){
+                targetFloor.setPosition(0);
+            } else if (targetFloor.getId().equals(updatedElevator.getTargetFloors().get(0).getId())) {
+                targetFloor.setPosition(1);
+            } else{
+                targetFloor.setPosition(order[0]);
+                order[0] = order[0] + 1;
+            }
+        });
 
-
+        return this.elevatorRepository.save(updatedElevator);
     }
 
     private ElevatorFloor getClosestElevatorFloorInElevator(Elevator elevator){
@@ -200,7 +217,7 @@ public class ElevatorService implements IElevatorService  {
         int range = (currentFloor + currentTargetFloor.getFloor()) / 2;
         List<ElevatorFloor> elevatorFloorsInRange = elevator.getTargetFloors().stream().filter(ef ->
                 Math.abs(ef.getFloor() - range) <= Math.abs(currentFloor - range)
-                        && !currentTargetFloor.getId().equals(ef.getId())
+                && !ef.getId().equals(elevator.getTargetFloors().get(0).getId())
         ).toList();
 
         if(elevatorFloorsInRange.isEmpty())
