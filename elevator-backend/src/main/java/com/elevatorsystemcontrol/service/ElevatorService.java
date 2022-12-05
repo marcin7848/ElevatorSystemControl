@@ -1,6 +1,5 @@
 package com.elevatorsystemcontrol.service;
 
-import com.elevatorsystemcontrol.exceptions.FieldNameAndMessageException;
 import com.elevatorsystemcontrol.exceptions.MessageException;
 import com.elevatorsystemcontrol.model.Elevator;
 import com.elevatorsystemcontrol.model.ElevatorFloor;
@@ -15,9 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service

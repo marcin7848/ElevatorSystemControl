@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "elevator-angular": {
+    "elevator-frontend": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/elevator-angular",
+            "outputPath": "dist/elevator-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": [
@@ -64,10 +64,10 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "elevator-angular:build:production"
+              "browserTarget": "elevator-frontend:build:production"
             },
             "development": {
-              "browserTarget": "elevator-angular:build:development"
+              "browserTarget": "elevator-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -75,7 +75,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "elevator-angular:build"
+            "browserTarget": "elevator-frontend:build"
           }
         },
         "test": {

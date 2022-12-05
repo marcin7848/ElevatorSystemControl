@@ -1,7 +1,5 @@
 package com.elevatorsystemcontrol.controller;
 
-import com.elevatorsystemcontrol.exceptions.MessageException;
-import com.elevatorsystemcontrol.model.Elevator;
 import com.elevatorsystemcontrol.model.ElevatorFloor;
 import com.elevatorsystemcontrol.service.ElevatorFloorService;
 import com.elevatorsystemcontrol.service.ElevatorService;
