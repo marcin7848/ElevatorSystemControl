@@ -100,7 +100,7 @@ public class ElevatorService implements IElevatorService  {
      * - 3          Closing doors
      * Note that after a change in the current status there is a delay before changing it again.
      * For the currentStatus==1 the delay is calculated as follows:
-     * 3 seconds * the absolute value of the difference between current floor and target floor
+     * 3 seconds per floor between the current floor (startFloor) and the target floor (endFloor)
      *
      * @param el    The elevator object to start and manage the thread for it
      */
@@ -128,8 +128,6 @@ public class ElevatorService implements IElevatorService  {
                         floorsBetween = IntStream.range(startFloor, endFloor).boxed().
                                 sorted(Comparator.reverseOrder()).mapToInt(i -> i).toArray();
                     }
-
-                    System.out.println(Arrays.toString(floorsBetween));
 
                     for(int currFloor : floorsBetween){
                         elevator.setCurrentFloor(currFloor);
