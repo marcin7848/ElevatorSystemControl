@@ -129,13 +129,20 @@ public class ElevatorService implements IElevatorService  {
                                 sorted(Comparator.reverseOrder()).mapToInt(i -> i).toArray();
                     }
 
+                    Long targetElevatorFloorId = elevator.getTargetFloors().get(0).getId();
+
                     for(int currFloor : floorsBetween){
                         elevator.setCurrentFloor(currFloor);
                         this.elevatorRepository.save(elevator);
                         Thread.sleep(3000L);
+                        if(!targetElevatorFloorId.equals(this.getElevator(elevator.getId()).getTargetFloors().get(0).getId())){
+                            break;
+                        }
                     }
 
-                    setElevatorStatus(2, elevator);
+                    if(targetElevatorFloorId.equals(this.getElevator(elevator.getId()).getTargetFloors().get(0).getId())){
+                        setElevatorStatus(2, elevator);
+                    }
                 }
                 case 2 -> {
                     elevator.setCurrentFloor(elevator.getTargetFloors().get(0).getFloor());
@@ -175,7 +182,7 @@ public class ElevatorService implements IElevatorService  {
         if(elevator.getTargetFloors().size() < 2)
             return;
 
-        //ElevatorFloor elevatorFloor = this.getClosestElevatorFloorInElevator(elevator);
+        ElevatorFloor elevatorFloor = this.getClosestElevatorFloorInElevator(elevator);
 
 
 
