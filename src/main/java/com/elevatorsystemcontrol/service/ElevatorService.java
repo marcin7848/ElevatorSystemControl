@@ -70,8 +70,9 @@ public class ElevatorService implements IElevatorService  {
 
     /**
      * Deletes the elevator of the given ID
-     * @param id    elevator's Long ID to delete
-     * @return      true if the elevator has been deleted, false if it has not
+     * @param id                        elevator's Long ID to delete
+     * @exception MessageException      throws exception if List<TargetFloor> is not empty
+     * @return                          true if the elevator has been deleted, false if it has not
      */
     public boolean deleteElevator(Long id){
         Elevator elevator = this.getElevator(id);
