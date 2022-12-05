@@ -181,9 +181,23 @@ public class ElevatorService implements IElevatorService  {
         this.elevatorRepository.save(elevator);
     }
 
+
     /**
-     * Sorts target floors for the specified elevator
-     * @param elevator Elevator object
+     * Sorts the targetFloors for the specified elevator object
+     * Managing the next target floor for an elevator works as follows:
+     * - if there is no target floors, the elevator waits on the last floor where it was
+     * - if there is only 1 target floor, the elevator should go there
+     * - is there are 2 or more target floors, the algorithm proceeds as follows:
+     *  for the selected floors inside the elevator:
+     *  - go to the first selected floor unless there is another selected floor chosen INSIDE the elevator BETWEEN
+     *    the current floor and the current selected floor - if so: change the current selected floor to the one in-between
+     *  for the selected floors outside the elevator:
+     *  - go to the first selected floor unless there is another selected floor chosen OUTSIDE the elevator BETWEEN
+     *    the current floor and the current selected floor and the DIRECTION of the chosen floor outside the elevator is
+     *    the SAME as the current elevator movement - if so: change the current selected floor to the one in between
+     *
+     * @param elevator  Elevator object for which targetFloors are sorted
+     * @return          Updated elevator object with targetFloors sorted by position field
      */
     private Elevator sortTargetFloors(Elevator elevator){
         Elevator updatedElevator = this.getElevator(elevator.getId());
