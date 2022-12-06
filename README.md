@@ -103,10 +103,27 @@ java -jar app/elevator-system-control-1.0.jar
 ```
 Open the browser and go to [http://localhost:8080/][localhost]
 
-Notes: On the application startup, the sample data are loaded into the database.
+Note: On the application startup, the sample data are loaded into the database.
 The application uses the H2 in-memory database. As a result, the database is cleared on the application shutdown.
 
 ### Docker setup 
+
+You are able to build the application and run it using Docker.
+
+Build the container:
+```
+docker build -t elevator-system-control .
+```
+
+Run the container:
+```
+docker run -p 8080:8080 elevator-system-control
+```
+
+Open the browser and go to [http://localhost:8080/][localhost]
+
+Note: On the application startup, the sample data are loaded into the database.
+The application uses the H2 in-memory database. As a result, the database is cleared on the application shutdown.
 
 
 [JavaJDK]: https://www.oracle.com/java/technologies/downloads/
