@@ -1,5 +1,8 @@
 <div style="text-align: center;"><h1>Elevator System Control</h1></div>
 
+A simple WEB application for controlling, simulating and monitoring the elevators' system.
+
+
 ## Documentation
 
 
