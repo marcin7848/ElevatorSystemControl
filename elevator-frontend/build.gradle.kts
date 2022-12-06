@@ -27,3 +27,4 @@ tasks.register<NpmTask>("buildNpm") {
 tasks.build {
   finalizedBy("buildNpm")
 }
+

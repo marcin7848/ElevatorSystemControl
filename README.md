@@ -99,7 +99,7 @@ gradle build
 
 Run the application:
 ```
-java -jar app/elevator-system-control-1.0.jar
+java -jar elevator-backend/build/libs/elevator-system-control-1.0.jar
 ```
 Open the browser and go to [http://localhost:8080/][localhost]
 
