@@ -23,7 +23,3 @@ tasks.register<NpmTask>("buildNpm") {
   dependsOn(npmInstallTask)
   npmCommand.set(listOf("run", "build"))
 }
-
-tasks.build {
-  finalizedBy("buildNpm")
-}

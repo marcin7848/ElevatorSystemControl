@@ -21,7 +21,6 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":elevator-frontend"))
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.jetbrains:annotations:23.0.0")
@@ -39,6 +38,8 @@ tasks.withType<Test> {
 }
 
 tasks.named<BootJar>("bootJar") {
+    dependsOn(":elevator-frontend:buildNpm")
+
     this.archiveFileName.set("elevator-system-control-1.0.jar")
     from("../elevator-frontend/dist/elevator-frontend") {
         into("static")
