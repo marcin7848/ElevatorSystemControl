@@ -39,6 +39,7 @@ tasks.withType<Test> {
 }
 
 tasks.named<BootJar>("bootJar") {
+    this.archiveFileName.set("elevator-system-control-1.0.jar")
     from("../elevator-frontend/dist/elevator-frontend") {
         into("static")
     }
