@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Timestamp;
 
 @Entity
-@Table(name = "elevator_floors")
+@Table(name = "elevator_floor")
 @NoArgsConstructor
 @Data
 @AllArgsConstructor
