@@ -122,9 +122,6 @@ docker run -p 8080:8080 elevator-system-control
 
 Open the browser and go to [http://localhost:8080/][localhost]
 
-Note: On the application startup, the sample data are loaded into the database.
-The application uses the H2 in-memory database. As a result, the database is cleared on the application shutdown.
-
 
 [JavaJDK]: https://www.oracle.com/java/technologies/downloads/
 [node.js]: https://nodejs.org/
