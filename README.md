@@ -2,7 +2,6 @@
 
 A simple WEB application for controlling, simulating and monitoring the elevators' system.
 
-
 ## Documentation
 
 <details>
@@ -30,21 +29,37 @@ If the selected floor was changed during elevator's movement, changing the curre
 <details>
 <summary>Selecting the next floor algorithm</summary>
 
+Direction of the elevator can be 1 or -1 (going UP or DOWN):
+The direction is set after the first floor is selected:
+- if selected floor is lower than current floor - the direction is set to -1
+- if selected floor is higher than current floor - the direction is set to 1
+
+
+The direction of the elevator is changed to the opposite value when there are:
+- no more selected floors higher than the current floor (direction is changed from 1 to -1)
+- no more selected floors lower than the current floor (direction is changed from -1 to 1)
+  in other words: elevator is going always in the same direction until it reaches the last selected floor in that direction
+
 Managing the next selected floor for an elevator works as follows:
-
-
 - if there are no selected floors, the elevator waits on the last floor where it was
-- if there is only 1 selected floor, the elevator goes there
+- if there is only 1 selected floor, the elevator should go there
 - if there are 2 or more selected floors, the algorithm proceeds as follows:
   - for the selected floors inside the elevator:
-    - go to the first selected floor unless there is another selected floor chosen INSIDE the elevator BETWEEN 
+    - go to the first selected floor unless there is another selected floor chosen INSIDE the elevator BETWEEN
       the current floor and the current selected floor - if so: change the current selected floor to the one in-between
-      (always pick the floor closest to the current floor first)
   - for the selected floors outside the elevator:
     - go to the first selected floor unless there is another selected floor chosen OUTSIDE the elevator BETWEEN
       the current floor and the current selected floor and the DIRECTION of the chosen floor outside the elevator is
-      the SAME as the current elevator movement - if so: change the current selected floor to the one in between
-      (always pick the floor closest to the current floor first)
+      the SAME as the current elevator direction - if so: change the current selected floor to the one in between
+
+- all other selected floors (that are not in-between the selected floor and the current floor) algorithm works as follows:
+  - if the elevator direction is 1 (going UP):
+    - place every selected floor higher than the current floor in the ascending order
+      and after it place every selected floor lower than the current floor in the descending order
+  - if the elevator direction is -1 (going DOWN):
+    - place every selected floor lower than the current floor in the descending order
+      and after it place every selected floor higher than the current floor in the ascending order
+
 
 </details>
 
@@ -121,9 +136,6 @@ docker run -p 8080:8080 elevator-system-control
 ```
 
 Open the browser and go to [http://localhost:8080/][localhost]
-
-Note: On the application startup, the sample data are loaded into the database.
-The application uses the H2 in-memory database. As a result, the database is cleared on the application shutdown.
 
 
 [JavaJDK]: https://www.oracle.com/java/technologies/downloads/

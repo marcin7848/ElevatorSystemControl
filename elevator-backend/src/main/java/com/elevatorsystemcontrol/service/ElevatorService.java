@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.Executors;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Service
@@ -181,17 +183,37 @@ public class ElevatorService implements IElevatorService  {
 
     /**
      * Sorts the selectedFloors for the specified elevator object
+     *
+     * Direction of the elevator can be 1 or -1 (going UP or DOWN):
+     * The direction is set after the first floor is selected:
+     * - if selected floor is lower than current floor - the direction is set to -1
+     * - if selected floor is higher than current floor - the direction is set to 1
+     *
+     *
+     * The direction of the elevator is changed to the opposite value when there are:
+     * - no more selected floors higher than the current floor (direction is changed from 1 to -1)
+     * - no more selected floors lower than the current floor (direction is changed from -1 to 1)
+     * in other words: elevator is going always in the same direction until it reaches the last selected floor in that direction
+     *
      * Managing the next selected floor for an elevator works as follows:
      * - if there are no selected floors, the elevator waits on the last floor where it was
      * - if there is only 1 selected floor, the elevator should go there
      * - if there are 2 or more selected floors, the algorithm proceeds as follows:
-     *  for the selected floors inside the elevator:
-     *  - go to the first selected floor unless there is another selected floor chosen INSIDE the elevator BETWEEN
-     *    the current floor and the current selected floor - if so: change the current selected floor to the one in-between
-     *  for the selected floors outside the elevator:
-     *  - go to the first selected floor unless there is another selected floor chosen OUTSIDE the elevator BETWEEN
-     *    the current floor and the current selected floor and the DIRECTION of the chosen floor outside the elevator is
-     *    the SAME as the current elevator movement - if so: change the current selected floor to the one in between
+     *   - for the selected floors inside the elevator:
+     *     - go to the first selected floor unless there is another selected floor chosen INSIDE the elevator BETWEEN
+     *       the current floor and the current selected floor - if so: change the current selected floor to the one in-between
+     *   - for the selected floors outside the elevator:
+     *     - go to the first selected floor unless there is another selected floor chosen OUTSIDE the elevator BETWEEN
+     *       the current floor and the current selected floor and the DIRECTION of the chosen floor outside the elevator is
+     *       the SAME as the current elevator direction - if so: change the current selected floor to the one in between
+     *
+     * - all other selected floors (that are not in-between the selected floor and the current floor) algorithm works as follows:
+     *   - if the elevator direction is 1 (going UP):
+     *     - place every selected floor higher than the current floor in the ascending order
+     *       and after it place every selected floor lower than the current floor in the descending order
+     *   - if the elevator direction is -1 (going DOWN):
+     *     - place every selected floor lower than the current floor in the descending order
+     *       and after it place every selected floor higher than the current floor in the ascending order
      *
      * @param elevator  Elevator object for which selectedFloors are sorted
      * @return          Updated elevator object with selectedFloors sorted by position field
@@ -203,37 +225,80 @@ public class ElevatorService implements IElevatorService  {
 
         int direction = updatedElevator.getCurrentFloor() <= updatedElevator.getSelectedFloors().get(0).getFloor()? 1 : -1;
 
-        if(direction == 1)
-            updatedElevator.getSelectedFloors().sort(Comparator.comparing(ElevatorFloor::getFloor));
-        else
-            updatedElevator.getSelectedFloors().sort(Comparator.comparing(ElevatorFloor::getFloor).reversed());
+        // Sort selected floors by Floor in ascending order
+        updatedElevator.getSelectedFloors().sort(Comparator.comparing(ElevatorFloor::getFloor));
 
-        List<Long> elevatorFloorIdsBetween = new ArrayList<>();
-        updatedElevator.getSelectedFloors().forEach(tf -> {
-            if(direction == 1 && tf.getFloor() >= updatedElevator.getCurrentFloor()
-                    && (tf.getDirection() == 0 || tf.getDirection() == direction)){
-                elevatorFloorIdsBetween.add(tf.getId());
-            }
-            else if(direction == -1 && tf.getFloor() <= updatedElevator.getCurrentFloor()
-                    && (tf.getDirection() == 0 || tf.getDirection() == direction)){
-                elevatorFloorIdsBetween.add(tf.getId());
-            }
+        // Create a predicate that checks if a Floor is greater than the current floor
+        Predicate<ElevatorFloor> isGreaterThanCurrentFloor = i -> i.getFloor() > updatedElevator.getCurrentFloor();
+
+        // Split the selectedFloors into 2 parts - with higher and lower floors than the currentFloor
+        // if selectedFloors contains the currentFloor, the second part with lower floors will contain it
+        Map<Boolean, List<ElevatorFloor>> floorsByCurrentFloor = updatedElevator.getSelectedFloors().stream()
+                .collect(Collectors.partitioningBy(isGreaterThanCurrentFloor));
+
+        // Create 2 lists with higher and lower floors than the currentFloor for clarity
+        List<ElevatorFloor> higherElevatorFloors = floorsByCurrentFloor.get(true);
+        List<ElevatorFloor> lowerElevatorFloors = floorsByCurrentFloor.get(false);
+
+
+        higherElevatorFloors.sort((elevatorFloor1, elevatorFloor2) -> {
+            int floor1 = elevatorFloor1.getFloor();
+            int floor2 = elevatorFloor2.getFloor();
+            int direction1 = elevatorFloor1.getDirection();
+            int direction2 = elevatorFloor2.getDirection();
+
+            if (direction1 == -1 && direction2 == -1) return floor1 <= floor2 ? -1 : 1;
+            if (direction1 == -1 && direction2 == 0) return -1;
+            if (direction1 == -1 && direction2 == 1) return -1;
+            if (direction1 == 0 && direction2 == -1) return 1;
+            if (direction1 == 0 && direction2 == 0) return floor1 <= floor2 ? 1 : -1;
+            if (direction1 == 0 && direction2 == 1) return floor1 <= floor2 ? 1 : -1;
+            if (direction1 == 1 && direction2 == -1) return 1;
+            if (direction1 == 1 && direction2 == 0) return floor1 <= floor2 ? 1 : -1;
+            if (direction1 == 1 && direction2 == 1) return floor1 <= floor2 ? 1 : -1;
+
+            return 0;
         });
 
-        int[] order = {0, elevatorFloorIdsBetween.size()};
-        updatedElevator.getSelectedFloors().forEach(selectedFloor -> {
-            if(elevatorFloorIdsBetween.contains(selectedFloor.getId())){
-                selectedFloor.setPosition(order[0]);
-                order[0] = order[0]+1;
-            } else {
-                selectedFloor.setPosition(order[1]);
-                order[1] = order[1]+1;
-            }
+        Collections.reverse(higherElevatorFloors);
+
+        lowerElevatorFloors.sort((elevatorFloor1, elevatorFloor2) -> {
+            int floor1 = elevatorFloor1.getFloor();
+            int floor2 = elevatorFloor2.getFloor();
+            int direction1 = elevatorFloor1.getDirection();
+            int direction2 = elevatorFloor2.getDirection();
+
+            if (direction1 == -1 && direction2 == -1) return floor1 <= floor2 ? -1 : 1;
+            if (direction1 == -1 && direction2 == 0) return floor1 <= floor2 ? -1 : 1;
+            if (direction1 == -1 && direction2 == 1) return 1;
+            if (direction1 == 0 && direction2 == -1) return floor1 <= floor2 ? -1 : 1;
+            if (direction1 == 0 && direction2 == 0) return floor1 <= floor2 ? -1 : 1;
+            if (direction1 == 0 && direction2 == 1) return 1;
+            if (direction1 == 1 && direction2 == -1) return -1;
+            if (direction1 == 1 && direction2 == 0) return -1;
+            if (direction1 == 1 && direction2 == 1) return floor1 <= floor2 ? 1 : -1;
+
+            return 0;
         });
 
-        Elevator resortedElevator = this.elevatorRepository.save(updatedElevator);
-        resortedElevator.getSelectedFloors().sort(Comparator.comparing(ElevatorFloor::getPosition));
-        return resortedElevator;
+        Collections.reverse(lowerElevatorFloors);
+
+        List<ElevatorFloor> mergedFloors = new ArrayList<>();
+        if(direction == 1){
+            mergedFloors.addAll(higherElevatorFloors);
+            mergedFloors.addAll(lowerElevatorFloors);
+        }else{
+            mergedFloors.addAll(lowerElevatorFloors);
+            mergedFloors.addAll(higherElevatorFloors);
+        }
+
+        int[] position = {0};
+        mergedFloors.forEach(ef -> {
+            ef.setPosition(position[0]++);
+        });
+
+        updatedElevator.setSelectedFloors(mergedFloors);
+        return this.elevatorRepository.save(updatedElevator);
     }
 
 }
