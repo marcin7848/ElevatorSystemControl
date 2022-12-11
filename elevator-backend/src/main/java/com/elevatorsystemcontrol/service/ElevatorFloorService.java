@@ -1,5 +1,6 @@
 package com.elevatorsystemcontrol.service;
 
+import com.elevatorsystemcontrol.exceptions.MessageException;
 import com.elevatorsystemcontrol.model.Elevator;
 import com.elevatorsystemcontrol.model.ElevatorFloor;
 import com.elevatorsystemcontrol.repository.ElevatorFloorRepository;
@@ -40,17 +41,19 @@ public class ElevatorFloorService implements IElevatorFloorService {
 
     /**
      * Adds a new elevator floor destination to specified Elevator object
-     * @param elevatorFloor     The object should contain floor and direction params
-     * @param elevatorId        The ID of existed elevator in the database
-     * @return                  ElevatorFloor object created in the database
+     * @param elevatorFloor         The object should contain floor and direction params
+     * @param elevatorId            The ID of existed elevator in the database
+     * @exception MessageException  Throws an exception if the selected floor already exists
+     * @return                      ElevatorFloor object created in the database
      */
     public ElevatorFloor addNewElevatorFloor(ElevatorFloor elevatorFloor, Long elevatorId){
         Elevator elevator = this.elevatorService.getElevator(elevatorId);
+        if(elevator.getSelectedFloors().stream().anyMatch(ef -> ef.getFloor() == elevatorFloor.getFloor())){
+            throw new MessageException(String.format("This elevator will already go to the %dth floor.", elevatorFloor.getFloor()));
+        }
         elevatorFloor.setFloorPickTime(Timestamp.from(Instant.now()));
         elevatorFloor.setElevator(elevator);
         elevatorFloor.setPosition(this.getHighestElevatorFloorPositionByElevator(elevator)+1);
         return this.elevatorFloorRepository.save(elevatorFloor);
     }
-
-    
 }
