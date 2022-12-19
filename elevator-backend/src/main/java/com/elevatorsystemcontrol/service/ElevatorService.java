@@ -105,9 +105,20 @@ public class ElevatorService implements IElevatorService  {
      *
      * @param el    The elevator object to start and manage the thread for it
      */
+
+    // TODO: add enums for currentStatus and direction, instead of numbers
+    // TODO: make sure it's the tail call (check if recursion called at the end fo try block makes it the correct tail call)
+    // TODO: instead of list of the selected floors, make it a tree (custom one, maybe use LinkedList),
+    //  avoid sorting many times, sort once and then just add new selected floors at the correct place (maybe even stop using db for it)
+    // TODO: repair threads, make sure how exactly @Async works and if the thread is removed at the elevator deletion
+    //  also probably better create just a single thread to manage all elevators
+    // TODO: add additional functionality (repair current behaviour for floors selected outside the elevator) -
+    //  pressing the button outside the elevator should initiate the call for the best (calculated) elevator,
+    //  instead of calling only the one, maybe use strategies for it
     @Async
     public void manageThreadForElevator(Elevator el){
         try {
+            // TODO: the call below probably not necessary
             Elevator elevator = this.getElevator(el.getId());
             switch (elevator.getCurrentStatus()) {
                 case 0 -> {
@@ -158,6 +169,7 @@ public class ElevatorService implements IElevatorService  {
                     Thread.sleep(3000);
                     if (elevator.getSelectedFloors().size() > 0) {
                         int removeFloor = elevator.getSelectedFloors().get(0).getFloor();
+                        // TODO: make additional layer to encapsulate all actions on the tree outside of service, make only methods calls here
                         elevator.getSelectedFloors().removeAll(
                                 elevator.getSelectedFloors().stream().filter(x -> x.getFloor() == removeFloor).toList());
                     }
